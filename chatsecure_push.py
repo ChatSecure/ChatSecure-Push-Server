@@ -14,8 +14,18 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Flask
+DEBUG = True
+
+from flask import Flask, jsonify
 app = Flask(__name__)
 
 
+product_identifiers = ['ChatSecure_Push_1Month', 'ChatSecure_Push_1Year']
 
+@app.route('/request_product_identifiers', methods=['GET'])
+def request_product_identifiers():
+    return jsonify(identifiers=product_identifiers)
+
+if __name__ == '__main__':
+    app.debug = DEBUG
+    app.run()
