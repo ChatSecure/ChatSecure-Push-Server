@@ -58,10 +58,11 @@ Definitions
 Server Functions
 --------------
 
-* `register(dpt, receipt)`
-	* Returns `account_id` and `password`
+* `register(receipt)`
+	* Returns `account_id`
 	* Verifies In-App Purchase receipt with Apple before account creation
-* `reset_account(dpt, receipt)`
+	* Will reset 
+* `reset_account(receipt)`
 * `request_product_identifiers(store=iOS)`
 	* Returns array of IAP product identifiers for chosen App Store
 * `update_dpt(account_id, password, dpt)`
