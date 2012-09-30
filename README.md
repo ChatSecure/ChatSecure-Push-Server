@@ -46,7 +46,7 @@ Definitions
 Server Data Model----------
     {
       "account_id": {
-          "password": "optional global account password",
+          "password": "hashed global account password",
           "dpt": ["32 bytes of hex in string format", "This is returned from the iOS device"],
           "pat": ["randomly generated push access tokens"],
           "transaction_id": "hashed transaction id from IAP receipt",
@@ -59,13 +59,12 @@ Server Functions
 --------------
 
 * `register(receipt)`
-	* Returns `account_id`
 	* Verifies In-App Purchase receipt with Apple before account creation
-	* Will reset 
+	* Creates `accound_id` and `password` in database
 * `reset_account(receipt)`
 * `request_product_identifiers(store=iOS)`
 	* Returns array of IAP product identifiers for chosen App Store
-* `update_dpt(account_id, password, dpt)`
+* `add_dpt(account_id, password, dpt)`
 	* Updates the device push token for a user
 * `request_pat(account_id, password)`
 	* Returns a new push access token

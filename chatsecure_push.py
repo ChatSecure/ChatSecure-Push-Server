@@ -16,16 +16,36 @@
 
 DEBUG = True
 
-from flask import Flask, jsonify
+import requests
+import secrets
+import json
+from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 
 product_identifiers = ['ChatSecure_Push_1Month', 'ChatSecure_Push_1Year']
 
+if DEBUG == False:
+    itunes_verify_url = 'https://buy.itunes.apple.com/verifyReceipt'
+else:
+    itunes_verify_url = 'https://sandbox.itunes.apple.com/verifyReceipt'
+
 @app.route('/request_product_identifiers', methods=['GET'])
 def request_product_identifiers():
     return jsonify(identifiers=product_identifiers)
 
+@app.route('/register', methods=['POST'])
+def register():
+    if request.json != None:
+        post_data = request.json
+        post_data['password'] = secrets.iap_shared_secret
+        print itunes_verify_url
+        print json.dumps(post_data)
+        verify = not DEBUG
+        r = requests.post(itunes_verify_url, json.dumps(post_data), verify=verify)
+        print r.text
+        return jsonify(receipt=r.text)
+
 if __name__ == '__main__':
     app.debug = DEBUG
-    app.run()
+    app.run(host='0.0.0.0')
