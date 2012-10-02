@@ -19,9 +19,17 @@ DEBUG = True
 import requests
 import secrets
 import json
+from Crypto.Random import random
 from flask import Flask, jsonify, request
+import datetime
+from couchdbkit import *
 app = Flask(__name__)
 
+
+class Account(Document):
+     author = StringProperty()
+     content = StringProperty()
+     date = DateTimeProperty()
 
 product_identifiers = ['ChatSecure_Push_1Month', 'ChatSecure_Push_1Year']
 
@@ -41,10 +49,13 @@ def register():
         post_data['password'] = secrets.iap_shared_secret
         print itunes_verify_url
         print json.dumps(post_data)
-        verify = not DEBUG
+        verify = not DEBUG # This is to prevent failure when SSL mismatch occurs on sandbox server
         r = requests.post(itunes_verify_url, json.dumps(post_data), verify=verify)
-        print r.text
-        return jsonify(receipt=r.text)
+        receipt = r.json
+        if receipt['status'] != 0:
+            return jsonify(error='The receipt is invalid.')
+
+        
 
 if __name__ == '__main__':
     app.debug = DEBUG

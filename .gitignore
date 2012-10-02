@@ -28,3 +28,4 @@ pip-log.txt
 
 .DS_Store
 secrets.py
+private_keys

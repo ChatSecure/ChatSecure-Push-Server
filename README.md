@@ -26,9 +26,9 @@ Setup your virtual environment. You'll probably need to do some more stuff too.
     $ mkvirtualenv cps
     $ workon cps
     
-You will need to install the following dependencies: `apns`, `flask`, `couchdbkit`
+You will need to install the following dependencies: `apns`, `flask`, `couchdbkit`, `requests`, `pycrypto`
 
-    (cps)$ pip install apns flask couchdbkit
+    (cps)$ pip install apns flask couchdbkit requests pycrypto
     
 Setup
 ---------
