@@ -27,9 +27,9 @@ app = Flask(__name__)
 
 
 class Account(Document):
-     author = StringProperty()
-     content = StringProperty()
-     date = DateTimeProperty()
+     password = StringProperty()
+     dpts = ListProperty()
+     pats = ListProperty()
 
 product_identifiers = ['ChatSecure_Push_1Month', 'ChatSecure_Push_1Year']
 
