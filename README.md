@@ -49,7 +49,7 @@ Definitions
           "password": "hashed global account password",
           "dpt": ["32 bytes of hex in string format", "This is returned from the iOS device"],
           "pat": ["randomly generated push access tokens"],
-          "transaction_id": "hashed transaction id from IAP receipt",
+          "transaction_ids": ["hashed transaction ids from IAP receipt"],
           "purchase_date": "date of purchase from last receipt",
           "expiration_date": "date of account expiration"
       }
