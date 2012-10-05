@@ -19,6 +19,7 @@ DEBUG = True
 import requests
 import secrets
 import json
+import os
 
 from Crypto.Random import random
 from Crypto.Hash import SHA256
@@ -33,7 +34,16 @@ connection = Connection()
 db = connection['pushdb']
 accounts = db['accounts']
 
-apns = APNs(use_sandbox=DEBUG, cert_file='cert.pem', key_file='key.pem')
+PROJECT_DIR = os.path.dirname(__file__)
+KEYS_DIR = os.path.join(PROJECT_DIR, 'private_keys/')
+
+cert_file_name = ''
+key_file_name = ''
+if DEBUG == True:
+    cert_file_name = 'ChatSecureDevCert.pem'
+    key_file_name = 'ChatSecureDevKey.pem'
+
+apns = APNs(use_sandbox=DEBUG, cert_file=os.path.join(KEYS_DIR, cert_file_name), key_file=os.path.join(KEYS_DIR, key_file_name))
 
 ''' Data Structure for accounts
     {
@@ -54,6 +64,7 @@ chatsecure_1_month_identifier = 'ChatSecure_Push_1Month'
 chatsecure_1_year_identifier = 'ChatSecure_Push_1Year'
 expired_status_code = 21006
 
+itunes_verify_url = ''
 if DEBUG == False:
     itunes_verify_url = 'https://buy.itunes.apple.com/verifyReceipt'
 else:
@@ -203,6 +214,7 @@ def knock():
         return jsonify(error='Invalid PAT')
     for dpt in dpts:
         # Send a notification
+        print 'sending push to ' + dpt
         payload = Payload(alert="Hello World!", sound="default", badge=1)
         apns.gateway_server.send_notification(dpt, payload)
 
@@ -210,6 +222,7 @@ def knock():
     bad_tokens = False
     for (token_hex, fail_time) in apns.feedback_server.items():
         # do stuff with token_hex and fail_time
+        print 'bad token: ' + token_hex
         bad_tokens = True
         dpts = filter(lambda a: a != token_hex, dpts)
     if bad_tokens == True:

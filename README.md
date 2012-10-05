@@ -33,8 +33,11 @@ You will need to install the following dependencies: `apns`, `flask`, `pymongo`,
 Setup
 ---------
 
-TODO: Write this section.
+Download your SSL cert(s) from the Apple Provisioning Portal and convert them to the PEM format:
+
+    $ openssl x509 -in ChatSecureDevCert.cer -inform der -out ChatSecureDevCert.pem
     
+    $ openssl pkcs12 -nocerts -out ChatSecureDevKey.pem -in ChatSecureDevKey.p12
 
 Definitions
 ---------
