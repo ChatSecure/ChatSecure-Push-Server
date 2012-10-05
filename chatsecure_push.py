@@ -123,6 +123,36 @@ def register():
     #print receipt
 
 
+@app.route('/add_dpt', methods=['POST'])
+def add_dpt():
+    if request.json == None:
+        return jsonify(error='You must POST JSON.')
+    post_data = request.json
+    account_id = post_data['account_id']
+    password = post_data['password']
+    dpt = post_data['dpt']
+    account = accounts.find_one({'account_id': account_id})
+    if account == None:
+        return jsonify(error='Invalid account ID.')
+    h = SHA256.new()
+    salted_password = account['transaction_id'] + password
+    h.update(salted_password)
+    hashed_password = h.hexdigest()
+    if hashed_password != account['password']:
+        return jsonify(error='Incorrect password.')
+    dpts = account.get('dpt')
+    print account
+    if dpts == None:
+        dpts = []
+    for temp_dpt in dpts:
+        if dpt == temp_dpt:
+            return jsonify(error='DPT already added to account.')
+    dpts.append(dpt)
+    account['dpt'] = dpts
+    accounts.save(account)
+    return jsonify(success='Added DPT to account.')
+
+
 if __name__ == '__main__':
     app.debug = DEBUG
     app.run(host='0.0.0.0')
