@@ -38,6 +38,13 @@ Download your SSL cert(s) from the Apple Provisioning Portal and convert them to
     $ openssl x509 -in ChatSecureDevCert.cer -inform der -out ChatSecureDevCert.pem
     
     $ openssl pkcs12 -nocerts -out ChatSecureDevKey.pem -in ChatSecureDevKey.p12
+    
+Usage
+----------
+
+To send a push to an `account_id` (don't forget your `pat`!): 
+
+    $ curl -v -H "Content-Type: application/json" -X POST -d '{"pat":"1975460","account_id":"9846905"}' https://push.chatsecure.org/knock
 
 Definitions
 ---------
