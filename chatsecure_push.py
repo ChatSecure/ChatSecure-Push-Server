@@ -57,6 +57,18 @@ else:
     itunes_verify_url = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
 
+def verify_password(account, password):
+    if account == None:
+        return False
+    h = SHA256.new()
+    salted_password = account['transaction_id'] + password
+    h.update(salted_password)
+    hashed_password = h.hexdigest()
+    if hashed_password != account['password']:
+        return False
+    return True
+
+
 @app.route('/request_product_identifiers', methods=['GET'])
 def request_product_identifiers():
     product_identifiers = [chatsecure_1_month_identifier, chatsecure_1_year_identifier]
@@ -96,7 +108,6 @@ def register():
     while account != None:
         account_id = str(random.randint(1000000, 9999999))
         account = accounts.find_one({'account_id': account_id})
-    print 'new account id: ' + account_id
     date_substring = original_purchase_date[0:10]  # Strip off time info
     date_format = '%Y-%m-%d'
     purchase_date = datetime.strptime(date_substring, date_format)
@@ -132,16 +143,10 @@ def add_dpt():
     password = post_data['password']
     dpt = post_data['dpt']
     account = accounts.find_one({'account_id': account_id})
-    if account == None:
-        return jsonify(error='Invalid account ID.')
-    h = SHA256.new()
-    salted_password = account['transaction_id'] + password
-    h.update(salted_password)
-    hashed_password = h.hexdigest()
-    if hashed_password != account['password']:
-        return jsonify(error='Incorrect password.')
+    if not verify_password(account, password):
+        return jsonify(error='Invalid account ID or password')
+    account = accounts.find_one({'account_id': account_id})
     dpts = account.get('dpt')
-    print account
     if dpts == None:
         dpts = []
     for temp_dpt in dpts:
@@ -151,6 +156,26 @@ def add_dpt():
     account['dpt'] = dpts
     accounts.save(account)
     return jsonify(success='Added DPT to account.')
+
+
+@app.route('/request_pat', methods=['POST'])
+def request_pat():
+    if request.json == None:
+        return jsonify(error='You must POST JSON.')
+    post_data = request.json
+    account_id = post_data['account_id']
+    password = post_data['password']
+    account = accounts.find_one({'account_id': account_id})
+    if not verify_password(account, password):
+        return jsonify(error='Invalid account ID or password')
+    pats = account.get('pat')
+    if pats == None:
+        pats = []
+    pat = str(random.randint(1000000, 9999999))  # TODO: make this more secure
+    pats.append(pat)
+    account['pat'] = pats
+    accounts.save(account)
+    return jsonify(pat=pat)
 
 
 if __name__ == '__main__':
