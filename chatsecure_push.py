@@ -26,11 +26,14 @@ from flask import Flask, jsonify, request
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from pymongo import Connection
+from apns import APNs, Payload
 app = Flask(__name__)
 
 connection = Connection()
 db = connection['pushdb']
 accounts = db['accounts']
+
+apns = APNs(use_sandbox=DEBUG, cert_file='cert.pem', key_file='key.pem')
 
 ''' Data Structure for accounts
     {
@@ -176,6 +179,43 @@ def request_pat():
     account['pat'] = pats
     accounts.save(account)
     return jsonify(pat=pat)
+
+
+@app.route('/knock', methods=['POST'])
+def knock():
+    if request.json == None:
+        return jsonify(error='You must POST JSON.')
+    post_data = request.json
+    account_id = post_data['account_id']
+    pat = post_data['pat']
+    account = accounts.find_one({'account_id': account_id})
+    if account == None:
+        return jsonify(error='Account does not exist.')
+    dpts = account.get('dpt')
+    pats = account.get('pat')
+    if pats == None:
+        pats = []
+    pat_found = False
+    for temp_pat in pats:  # This won't scale well with large lists of PATs
+        if pat == temp_pat:
+            pat_found = True
+    if not pat_found:
+        return jsonify(error='Invalid PAT')
+    for dpt in dpts:
+        # Send a notification
+        payload = Payload(alert="Hello World!", sound="default", badge=1)
+        apns.gateway_server.send_notification(dpt, payload)
+
+    # Get feedback messages
+    bad_tokens = False
+    for (token_hex, fail_time) in apns.feedback_server.items():
+        # do stuff with token_hex and fail_time
+        bad_tokens = True
+        dpts = filter(lambda a: a != token_hex, dpts)
+    if bad_tokens == True:
+        account['dpt'] = dpts
+        accounts.save(account)
+    return jsonify(success='Push(es) sent!')
 
 
 if __name__ == '__main__':
