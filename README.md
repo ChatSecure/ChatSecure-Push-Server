@@ -6,15 +6,15 @@ An experimental design for a privacy-minded push server.
 Installation
 ------------
 
-You will need to install [CouchDB](http://couchdb.apache.org) using the package manager of your choice:
+You will need to install [MongoDB](http://www.mongodb.org) using the package manager of your choice:
 
 On Mac OS X, I recommend [Homebrew](http://mxcl.github.com/homebrew/):
 
-    $ brew install -v couchdb
+    $ brew install mongodb
 
 Or on Ubuntu:
 
-    $ apt-get install couchdb
+    $ apt-get install mongodb
 
 If you don't have Python and pip, get them.
 
@@ -26,9 +26,9 @@ Setup your virtual environment. You'll probably need to do some more stuff too.
     $ mkvirtualenv cps
     $ workon cps
     
-You will need to install the following dependencies: `apns`, `flask`, `couchdbkit`, `requests`, `pycrypto`
+You will need to install the following dependencies: `apns`, `flask`, `pymongo`, `requests`, `pycrypto`, `python-dateutil`
 
-    (cps)$ pip install apns flask couchdbkit requests pycrypto
+    (cps)$ pip install apns flask pymongo requests pycrypto python-dateutil
     
 Setup
 ---------
@@ -45,12 +45,13 @@ Definitions
 **Receipt:** In-App Purchase Receipt
 Server Data Model----------
     {
-      "account_id": {
+      account: {
+          "account_id": "randomly assigned account ID"
           "password": "hashed global account password",
           "dpt": ["32 bytes of hex in string format", "This is returned from the iOS device"],
           "pat": ["randomly generated push access tokens"],
-          "transaction_ids": ["hashed transaction ids from IAP receipt"],
-          "purchase_date": "date of purchase from last receipt",
+          "transaction_id": "hashed original transaction id from IAP receipt",
+          "purchase_date": "date of original purchase",
           "expiration_date": "date of account expiration"
       }
     }
