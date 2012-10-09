@@ -71,16 +71,53 @@ else:
     itunes_verify_url = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
 
-def verify_password(account, password):
-    if account == None:
-        return False
+# TODO: Replace these with a more secure hashing function
+def hash_password(account, password):
     h = SHA256.new()
     salted_password = account['transaction_id'] + password
     h.update(salted_password)
     hashed_password = h.hexdigest()
+    return hashed_password
+
+
+# TODO: Replace these with a more secure hashing function
+def verify_password(account, password):
+    if account == None:
+        return False
+    hashed_password = hash_password(account, password)
     if hashed_password != account['password']:
         return False
     return True
+
+
+def verify_receipt(receipt_data):
+    receipt_post = {'receipt-data': receipt_data, 'password': secrets.iap_shared_secret}
+    verify = not DEBUG  # This is to prevent failure when SSL mismatch occurs on sandbox server
+    r = requests.post(itunes_verify_url, json.dumps(receipt_post), verify=verify)
+    response = r.json
+    # print response
+    status_code = response['status']
+    if status_code != 0 and not status_code == expired_status_code:  # TODO: Fix this in a better way for production
+        return None
+    if status_code == expired_status_code:
+        print 'Status code indicates subscription has expired.'
+        if not DEBUG:
+            return None
+    receipt = response['receipt']
+    return receipt
+
+
+def hash_original_transaction_id(original_transaction_id):
+    h = SHA256.new()
+    salted_original_transaction_id = secrets.transaction_id_salt + original_transaction_id
+    h.update(salted_original_transaction_id)
+    hashed_original_transaction_id = h.hexdigest()
+    return hashed_original_transaction_id
+
+
+def find_account_by_hashed_transaction_id(hashed_original_transaction_id):
+    account = accounts.find_one({'transaction_id': hashed_original_transaction_id})
+    return account
 
 
 @app.route('/request_product_identifiers', methods=['GET'])
@@ -94,29 +131,23 @@ def register():
     if request.json == None:
         return jsonify(error='You must POST JSON.')
     post_data = request.json
-    if post_data['receipt-data'] == None:
+    receipt_data = post_data.get('receipt-data')
+    if receipt_data == None:
         return jsonify(error='Missing receipt-data.')
-    post_data['password'] = secrets.iap_shared_secret
-    verify = not DEBUG  # This is to prevent failure when SSL mismatch occurs on sandbox server
-    r = requests.post(itunes_verify_url, json.dumps(post_data), verify=verify)
-    response = r.json
-    # print response
-    status_code = response['status']
-    if status_code != 0 and not status_code == expired_status_code:
-        return jsonify(error='The receipt is invalid.')
-    if status_code == expired_status_code:
-        print 'Status code indicates subscription has expired.'
-    receipt = response['receipt']
+    receipt = verify_receipt(receipt_data)
+    if receipt == None:
+        return jsonify(error='Receipt is invalid or has expired.')
     product_identifier = receipt['product_id']
     original_transaction_id = receipt['original_transaction_id']
-    h = SHA256.new()
-    salted_original_transaction_id = secrets.transaction_id_salt + original_transaction_id
-    h.update(salted_original_transaction_id)
-    hashed_original_transaction_id = h.hexdigest()
     original_purchase_date = receipt['original_purchase_date']
-    account = accounts.find_one({'transaction_id': hashed_original_transaction_id})
-    if account != None:
+
+    reset_account = post_data.get('reset')
+    hashed_original_transaction_id = hash_original_transaction_id(original_transaction_id)
+    account = find_account_by_hashed_transaction_id(hashed_original_transaction_id)
+    if account != None and not reset_account:
         return jsonify(error='Account already exists.')
+    if reset_account == True:
+        accounts.remove(account['_id'])
     account_id = str(random.randint(1000000, 9999999))
     account = accounts.find_one({'account_id': account_id})
     while account != None:
@@ -132,11 +163,8 @@ def register():
         num_months = 12
     expiration_date = purchase_date + relativedelta(months=num_months)
     expiration_date_string = datetime.strftime(expiration_date, date_format)
-    h = SHA256.new()
     password = str(random.randint(1000000, 9999999))  # TODO: make this more secure
-    salted_password = hashed_original_transaction_id + password
-    h.update(salted_password)
-    hashed_password = h.hexdigest()
+    hashed_password = hash_password(account, password)
     account = {}
     account['account_id'] = account_id
     account['transaction_id'] = hashed_original_transaction_id
@@ -190,6 +218,23 @@ def request_pat():
     account['pat'] = pats
     accounts.save(account)
     return jsonify(pat=pat)
+
+
+@app.route('/change_password', methods=['POST'])
+def change_password():
+    if request.json == None:
+        return jsonify(error='You must POST JSON.')
+    post_data = request.json
+    account_id = post_data['account_id']
+    password = post_data['password']
+    new_password = post_data['new_password']
+    account = accounts.find_one({'account_id': account_id})
+    if not verify_password(account, password):
+        return jsonify(error='Invalid account ID or password')
+    hashed_password = hash_password(account, new_password)
+    account['password'] = hashed_password
+    accounts.save(account)
+    return jsonify(success='Password changed.')
 
 
 @app.route('/knock', methods=['POST'])

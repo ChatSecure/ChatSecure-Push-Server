@@ -77,10 +77,12 @@ Definitions
 Server Functions
 --------------
 
-* `register(receipt)`
+* `register(receipt, reset=false)`
 	* Verifies In-App Purchase receipt with Apple before account creation
-	* Creates `accound_id` and `password` in database
-* `reset_account(receipt)`
+	* Creates `account_id` and `password` in database
+	* If `reset` is `true`, the old `account_id` is deleted and a new `account_id` and `password` are created
+* `change_password(account_id, password, new_password)`
+	* Changes password
 * `request_product_identifiers(store=iOS)`
 	* Returns array of IAP product identifiers for chosen App Store
 * `add_dpt(account_id, password, dpt)`
