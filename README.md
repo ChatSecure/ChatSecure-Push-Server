@@ -39,6 +39,14 @@ Download your SSL cert(s) from the Apple Provisioning Portal and convert them to
     
     $ openssl pkcs12 -nocerts -out ChatSecureDevKey.pem -in ChatSecureDevKey.p12
     
+Start MongoDB:
+    
+    $ mongod
+
+Launch the Push Server:
+
+    $ python chatsecure_push.py
+    
 Usage
 ----------
 

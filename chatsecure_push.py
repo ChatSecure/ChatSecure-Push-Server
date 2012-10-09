@@ -27,7 +27,7 @@ from flask import Flask, jsonify, request
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
 from pymongo import Connection
-from apns import APNs, Payload
+from apns import APNs, Payload, PayloadAlert
 app = Flask(__name__)
 
 connection = Connection()
@@ -199,6 +199,7 @@ def knock():
     post_data = request.json
     account_id = post_data['account_id']
     pat = post_data['pat']
+    anonymous = post_data.get('anonymous')
     account = accounts.find_one({'account_id': account_id})
     if account == None:
         return jsonify(error='Account does not exist.')
@@ -215,7 +216,11 @@ def knock():
     for dpt in dpts:
         # Send a notification
         print 'sending push to ' + dpt
-        payload = Payload(alert="Hello World!", sound="default", badge=1)
+        payload_alert = PayloadAlert("", loc_key="Someone has requested to chat with you securely.")
+        if anonymous == True:
+            payload = Payload(payload_alert, sound="default")
+        else:
+            payload = Payload(payload_alert, sound="default", custom={'pat': pat})
         apns.gateway_server.send_notification(dpt, payload)
 
     # Get feedback messages
