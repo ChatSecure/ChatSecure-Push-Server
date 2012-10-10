@@ -107,6 +107,22 @@ def verify_receipt(receipt_data):
     return receipt
 
 
+def get_verified_account_from_post_data(post_data):
+    if post_data == None:
+        return None
+    account_id = post_data.get('account_id')
+    password = post_data.get('password')
+    account = get_account_from_account_id(account_id)
+    if not verify_password(account, password):
+        return None
+    return account
+
+
+def get_account_from_account_id(account_id):
+    account = accounts.find_one({'account_id': account_id})
+    return account
+
+
 def hash_original_transaction_id(original_transaction_id):
     h = SHA256.new()
     salted_original_transaction_id = secrets.transaction_id_salt + original_transaction_id
@@ -147,6 +163,7 @@ def register():
     if account != None and not reset_account:
         return jsonify(error='Account already exists.')
     if reset_account == True:
+        print 'Resetting account.'
         accounts.remove(account['_id'])
     account_id = str(random.randint(1000000, 9999999))
     account = accounts.find_one({'account_id': account_id})
@@ -178,16 +195,11 @@ def register():
 
 @app.route('/add_dpt', methods=['POST'])
 def add_dpt():
-    if request.json == None:
-        return jsonify(error='You must POST JSON.')
     post_data = request.json
-    account_id = post_data['account_id']
-    password = post_data['password']
-    dpt = post_data['dpt']
-    account = accounts.find_one({'account_id': account_id})
-    if not verify_password(account, password):
-        return jsonify(error='Invalid account ID or password')
-    account = accounts.find_one({'account_id': account_id})
+    account = get_verified_account_from_post_data(post_data)
+    if account == None:
+        jsonify(error='Invalid account ID or password.')
+    dpt = post_data.get('dpt')
     dpts = account.get('dpt')
     if dpts == None:
         dpts = []
@@ -202,14 +214,10 @@ def add_dpt():
 
 @app.route('/request_pat', methods=['POST'])
 def request_pat():
-    if request.json == None:
-        return jsonify(error='You must POST JSON.')
     post_data = request.json
-    account_id = post_data['account_id']
-    password = post_data['password']
-    account = accounts.find_one({'account_id': account_id})
-    if not verify_password(account, password):
-        return jsonify(error='Invalid account ID or password')
+    account = get_verified_account_from_post_data(post_data)
+    if account == None:
+        return jsonify(error='Invalid account ID or password.')
     pats = account.get('pat')
     if pats == None:
         pats = []
@@ -222,32 +230,40 @@ def request_pat():
 
 @app.route('/change_password', methods=['POST'])
 def change_password():
-    if request.json == None:
-        return jsonify(error='You must POST JSON.')
     post_data = request.json
-    account_id = post_data['account_id']
-    password = post_data['password']
-    new_password = post_data['new_password']
-    account = accounts.find_one({'account_id': account_id})
-    if not verify_password(account, password):
-        return jsonify(error='Invalid account ID or password')
+    new_password = post_data.get('new_password')
+    if len(new_password) < 8:
+        return jsonify(error='Password length should be longer than 7.')
+    account = get_verified_account_from_post_data(post_data)
+    if account == None:
+        jsonify(error='Invalid account ID or password.')
     hashed_password = hash_password(account, new_password)
     account['password'] = hashed_password
     accounts.save(account)
     return jsonify(success='Password changed.')
 
 
+@app.route('/list_pat', methods=['POST'])
+def list_pat():
+    post_data = request.json
+    account = get_verified_account_from_post_data(post_data)
+    if account == None:
+        return jsonify(error='Invalid account ID or password.')
+    pats = account.get('pat')
+    if pats == None or len(pats) == 0:
+        return jsonify(error='No PATs are associated with this account.')
+    return jsonify(pats=pats)
+
+
 @app.route('/knock', methods=['POST'])
 def knock():
-    if request.json == None:
-        return jsonify(error='You must POST JSON.')
     post_data = request.json
-    account_id = post_data['account_id']
-    pat = post_data['pat']
-    anonymous = post_data.get('anonymous')
-    account = accounts.find_one({'account_id': account_id})
+    account_id = post_data.get('account_id')
+    account = get_account_from_account_id(account_id)
     if account == None:
-        return jsonify(error='Account does not exist.')
+        return jsonify(error='Invalid account ID or password.')
+    pat = post_data.get('pat')
+    anonymous = post_data.get('anonymous')
     dpts = account.get('dpt')
     pats = account.get('pat')
     if pats == None:

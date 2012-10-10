@@ -33,11 +33,14 @@ You will need to install the following dependencies: `apns`, `flask`, `pymongo`,
 Setup
 ---------
 
-Download your SSL cert(s) from the Apple Provisioning Portal and convert them to the PEM format:
+Download your SSL cert(s) from the Apple Provisioning Portal and convert them to the PEM format and put them in the `private_keys` directory:
 
     $ openssl x509 -in ChatSecureDevCert.cer -inform der -out ChatSecureDevCert.pem
     
     $ openssl pkcs12 -nocerts -out ChatSecureDevKey.pem -in ChatSecureDevKey.p12
+    
+    
+Create `secrets.py` and fill in values for the `iap_shared_secret` (from iTunes Connect) and `transaction_id_salt`.
     
 Start MongoDB:
     
@@ -45,6 +48,7 @@ Start MongoDB:
 
 Launch the Push Server:
 
+	$ workon cps
     $ python chatsecure_push.py
     
 Usage
@@ -76,6 +80,8 @@ Definitions
 
 Server Functions
 --------------
+
+All server functions take a JSON dictionary as input.
 
 * `register(receipt, reset=false)`
 	* Verifies In-App Purchase receipt with Apple before account creation
