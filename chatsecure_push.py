@@ -255,6 +255,22 @@ def list_pat():
     return jsonify(pats=pats)
 
 
+@app.route('/block_pat', methods=['POST'])
+def block_pat():
+    post_data = request.json
+    account = get_verified_account_from_post_data(post_data)
+    pat = post_data.get('pat')
+    if account == None:
+        return jsonify(error='Invalid account ID or password.')
+    pats = account.get('pat')
+    if pats == None or len(pats) == 0:
+        return jsonify(error='No PATs are associated with this account.')
+    pats = filter(lambda a: a != pat, pats)
+    account['pats'] = pats
+    accounts.save(account)
+    return jsonify(success='PAT removed successfully.')
+
+
 @app.route('/knock', methods=['POST'])
 def knock():
     post_data = request.json
