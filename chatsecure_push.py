@@ -170,6 +170,8 @@ def register():
     while account != None:
         account_id = str(random.randint(1000000, 9999999))
         account = accounts.find_one({'account_id': account_id})
+    account = {}
+    account['transaction_id'] = hashed_original_transaction_id
     date_substring = original_purchase_date[0:10]  # Strip off time info
     date_format = '%Y-%m-%d'
     purchase_date = datetime.strptime(date_substring, date_format)
@@ -182,9 +184,7 @@ def register():
     expiration_date_string = datetime.strftime(expiration_date, date_format)
     password = str(random.randint(1000000, 9999999))  # TODO: make this more secure
     hashed_password = hash_password(account, password)
-    account = {}
     account['account_id'] = account_id
-    account['transaction_id'] = hashed_original_transaction_id
     account['purchase_date'] = purchase_date
     account['expiration_date'] = expiration_date
     account['password'] = hashed_password
