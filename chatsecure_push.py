@@ -149,7 +149,7 @@ def register():
     original_transaction_id = receipt['original_transaction_id']
     original_purchase_date = receipt['original_purchase_date']
 
-    reset_account = post_data.get('reset')
+    reset_account = post_data.get('reset', False)
     hashed_original_transaction_id = hash_original_transaction_id(original_transaction_id)
     account = find_account_by_hashed_transaction_id(hashed_original_transaction_id)
     if account != None and not reset_account:
