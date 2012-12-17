@@ -26,12 +26,13 @@ from Crypto.Hash import SHA256
 from flask import Flask, jsonify, request
 from dateutil.relativedelta import relativedelta
 from datetime import datetime
-from pymongo import Connection
+from pymongo import MongoClient
 from apns import APNs, Payload, PayloadAlert
+from passlib.hash import bcrypt
 app = Flask(__name__)
 
-connection = Connection()
-db = connection['pushdb']
+client = MongoClient('localhost', 27017, j=True)
+db = client['pushdb']
 accounts = db['accounts']
 
 PROJECT_DIR = os.path.dirname(__file__)
@@ -71,23 +72,14 @@ else:
     itunes_verify_url = 'https://sandbox.itunes.apple.com/verifyReceipt'
 
 
-# TODO: Replace these with a more secure hashing function
 def hash_password(account, password):
-    h = SHA256.new()
-    salted_password = account['transaction_id'] + password
-    h.update(salted_password)
-    hashed_password = h.hexdigest()
-    return hashed_password
+    return bcrypt.encrypt(password)
 
 
-# TODO: Replace these with a more secure hashing function
 def verify_password(account, password):
     if account == None:
         return False
-    hashed_password = hash_password(account, password)
-    if hashed_password != account['password']:
-        return False
-    return True
+    return bcrypt.verify(password, account['password'])
 
 
 def verify_receipt(receipt_data):
