@@ -51,6 +51,11 @@ Launch the Push Server:
 	$ cd push
     $ python manage.py runserver
     
+Documentation
+-------------
+
+Check out `docs/v2/README.md` for now.
+    
 
 License
 ---------
