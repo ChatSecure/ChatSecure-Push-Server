@@ -11,7 +11,7 @@ Parameters:
 
 Results:
 
-* Creates new account with desired email and password.
+* Create new or login existing account with given email and password.
 
 ### POST /api/device
 
