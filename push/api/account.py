@@ -2,36 +2,31 @@
 from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from accounts.models import PushUser
-import accounts.models as accounts
+from accounts import models as accounts
 import json
 from django.contrib.auth import authenticate, login
-
-
-def check_email(request):
-    if request.method != 'GET':
-        return HttpResponse(json.dumps({'success': False, 'message': 'GET requests only'}), mimetype='application/json')
-    email = request.GET.get('email', None)
-    if not email:
-        return HttpResponse(json.dumps({'success': False, 'message': 'Missing email key'}), mimetype='application/json')
-
-    if accounts.email_available(email):
-        return HttpResponse(json.dumps({'available': True}), mimetype='application/json')
-    return HttpResponse(json.dumps({'available': False}), mimetype='application/json')
+from accounts.forms import LoginForm
 
 
 @csrf_exempt
-def login_or_create_account(request):
+def view_account(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'success': False, 'message': 'POST requests only'}), mimetype='application/json')
-    email = request.GET.get('email', None)
-    password = request.GET.get('password', None)
+    form = LoginForm(request.POST)
+
+    if not form.is_valid():
+        return HttpResponse(json.dumps({'success': False, 'message': 'Form validation error'}), mimetype='application/json')
+
+    email = form.cleaned_data.get('email', None)
+    password = form.cleaned_data.get('password', None)
+    create = form.cleaned_data.get('create', False)
 
     if email is None or password is None:
         return HttpResponse(json.dumps({'success': False, 'message': 'Missing required parameters email or password'}), mimetype='application/json')
 
     user = accounts.user_for_email(email)
     success_message = 'Login Successful'
-    if user is None:
+    if user is None and create is True:
         success_message = 'Account Creation Successful'
         user = PushUser.objects.create_user(username=email, email=email, password=password)
 
@@ -40,7 +35,4 @@ def login_or_create_account(request):
         if user.is_active:
             login(request, user)
             return HttpResponse(json.dumps({'success': True, 'message': success_message}), mimetype='application/json')
-        else:
-            return HttpResponse(json.dumps({'success': False, 'message': 'Account disabled'}), mimetype='application/json')
-    else:
-        return HttpResponse(json.dumps({'success': False, 'message': 'Invalid Login'}), mimetype='application/json')
+    return HttpResponse(json.dumps({'success': False, 'message': 'Invalid Login'}), mimetype='application/json')
