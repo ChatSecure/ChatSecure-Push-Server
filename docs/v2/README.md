@@ -6,8 +6,9 @@ This is a redesign to make everything simpler.
 
 Parameters:
 	
-* `email` - Required
-* `password` - Required
+* `email` - (String) **Required**
+* `password` - (String) **Required**
+* `create` - (BOOL) *Optional* - Tries to create account.
 
 Results:
 
@@ -25,6 +26,15 @@ Results:
 
 * Creates new device or updates existing device and attaches it to the user's account.
 
+### POST /api/knock
 
+Parameters:
+
+* `email` - (String) **Required**
+* `whitelist_token` - (String) *Optional*
+
+Results:
+
+* Asynchronously schedules push messages to all registered devices tied to an email. This design could be abused by spammers, so an optional whitelist_token can be used.
 
 
