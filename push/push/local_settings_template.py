@@ -26,3 +26,8 @@ SECRET_KEY = ''
 
 # Get this from iTunes Connect
 IAP_SHARED_SECRET = ''
+
+APNS_CERT_PATH = ''
+APNS_PASSPHRASE = ''
+APNS_DEV_CERT_PATH = ''
+APNS_DEV_PASSPHRASE = ''
