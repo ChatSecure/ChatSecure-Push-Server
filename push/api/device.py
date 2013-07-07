@@ -6,7 +6,7 @@ from django.core.exceptions import PermissionDenied
 from devices.models import device_for_apple_push_token
 from devices.forms import AppleDeviceForm
 from devices.models import AppleDevice
-from base import __to_dict
+from django.forms.models import model_to_dict
 
 
 @csrf_exempt
@@ -30,4 +30,5 @@ def register_device(request):
 
     return HttpResponse(json.dumps({'success': True,
                                     'message': 'Device registration updated.',
-                                    'object': __to_dict(device)}), mimetype='application/json')
+                                    'object': model_to_dict(device, fields=[field.name for field in device._meta.fields])}),
+                                    mimetype='application/json')

@@ -15,7 +15,7 @@ def view_account(request):
     form = LoginForm(request.POST)
 
     if not form.is_valid():
-        return HttpResponse(json.dumps({'success': False, 'message': 'Form validation error'}), mimetype='application/json')
+        return HttpResponse(json.dumps({'success': False, 'message': form.errors}), mimetype='application/json')
 
     email = form.cleaned_data.get('email', None)
     password = form.cleaned_data.get('password', None)

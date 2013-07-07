@@ -15,11 +15,3 @@ def user_for_email(email=None):
     except:
         pass
     return user
-
-
-def email_available(email=None):
-    if email is None:
-        return False
-    if(len(PushUser.objects.filter(email=email)) < 1):
-        return True
-    return False
