@@ -1,3 +1,5 @@
+import djcelery
+djcelery.setup_loader()
 # Django settings for push project.
 
 DEBUG = False
@@ -133,6 +135,7 @@ INSTALLED_APPS = (
     'accounts',
     'api',
     'devices',
+    'djcelery',
 
 )
 

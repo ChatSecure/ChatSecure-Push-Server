@@ -31,3 +31,5 @@ APNS_CERT_PATH = ''
 APNS_PASSPHRASE = ''
 APNS_DEV_CERT_PATH = ''
 APNS_DEV_PASSPHRASE = ''
+
+BROKER_URL = 'amqp://guest:guest@localhost:5672/'
