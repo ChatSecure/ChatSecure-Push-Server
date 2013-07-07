@@ -14,6 +14,8 @@ If you don't have the latest version of Python 2.7 and pip, get them.
 
     $ easy_install pip
 
+### Virtual Environment
+
 Setup your virtual environment. You'll probably need to do some more stuff too.
 
     $ pip install virtualenv virtualenvwrapper
@@ -22,46 +24,88 @@ Setup your virtual environment. You'll probably need to do some more stuff too.
     
 Then you will need to install the following dependencies: 
 
-	$ cd /path/to/ChatSecure-Push-Server/
-	$ pip install -r requirements.txt
+	(push)$ cd /path/to/ChatSecure-Push-Server/
+	(push)$ pip install -r requirements.txt
 	
 This will install the following dependencies:
 
- * apns-client
- * django
- * pycrypto
- * requests
- * python-dateutil
+```
+Django==1.5.1
+South==0.8.1
+amqp==1.0.12
+anyjson==0.3.3
+apns-client==0.1.6
+billiard==2.7.3.31
+celery==3.0.21
+django-celery==3.0.17
+kombu==2.5.12
+psycopg2==2.5
+pyOpenSSL==0.13
+python-dateutil==2.1
+pytz==2013b
+six==1.3.0
+wsgiref==0.1.2
+```
     
 Setup
 ---------
 
-Download your SSL cert(s) from the Apple Provisioning Portal and convert them to the PEM format and put them in the `private_keys` directory:
+### APNS SSL Certificates
+
+Download your SSL cert(s) from the Apple Provisioning Portal and convert them to the PEM format and put them somewhere:
 
     $ openssl x509 -in ChatSecureDevCert.cer -inform der -out ChatSecureDevCert.pem
     
     $ openssl pkcs12 -nocerts -out ChatSecureDevKey.pem -in ChatSecureDevKey.p12
+    $ (set a strong passphrase here, remember this for APNS_PASSPHRASE in local_settings.py)
     
-    
-Create `./push/push/local_settings.py` from the `local_settings_template.py` and fill in values for `IAP_SHARED_SECRET` (from iTunes Connect).    
+Copy the private key into the cert file because `apns-client` likes them in the same file.
 
-Launch the Push Server:
+	$ cat ChatSecureDevCert.pem ChatSecureDevKey.pem > Certificate.pem
+    
+### local_settings.py
+
+Copy `local_settings_template.py` to `local_settings.py`. Fill in the following values:
+
+ * `IAP_SHARED_SECRET`: This is if you will be validating In-App Purchases.
+ * `APNS_CERT_PATH`: Path to your `Certificate.pem` file.
+ * `APNS_PASSPHRASE`: Passphrase to decrypt the APNS SSL private key.
+ * The `APNS_DEV_CERT_PATH`, and `APNS_DEV_PASSPHRASE` are the same as above but for the Sandbox mode.
+ 
+### Sync Database
+
+You need to sync your database before you can do anything.
+
+    (push)$ python manage.py syncdb
+    (push)$ python manage.py migrate djcelery
+    
+### Running (Development)  
+
+Launch the Django Push Server:
 
 	$ workon push # activate your virtual environment
-	$ cd push
-    $ python manage.py runserver
+	(push)$ cd push
+    (push)$ python manage.py runserver # Start Django Server
+
+In a new terminal window:
     
-Documentation
+    (push)$ python manage.py celery worker --loglevel=info # Start Celery workers
+    
+### Running (Production)
+
+TODO
+    
+API Documentation
 -------------
 
-Check out `docs/v2/README.md` for now.
+Check out `docs/v2/README.md` for now. The API is constantly in flux right now.
     
 
 License
 ---------
 
 	ChatSecure Push Server
-	Copyright (C) 2013 Chris Ballinger
+	Copyright (C) 2013 Chris Ballinger <chris@chatsecure.org>
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as
