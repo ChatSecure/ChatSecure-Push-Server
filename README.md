@@ -84,11 +84,15 @@ You need to sync your database before you can do anything.
 Launch the Django Push Server:
 
 	$ workon push # activate your virtual environment
-	(push)$ cd push
     (push)$ python manage.py runserver # Start Django Server
-
+    
 In a new terminal window:
     
+    $ rabbitmq-server
+
+In another new terminal window:
+    
+    $ workon push # activate your virtual environment
     (push)$ python manage.py celery worker --loglevel=info # Start Celery workers
     
 ### Running (Production)
