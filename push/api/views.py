@@ -2,21 +2,20 @@ from django.shortcuts import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from accounts import models as accounts
-from devices.models import AppleDevice
 from api.tasks import apns_push
+from api.forms import KnockForm
 
 
 @csrf_exempt
 def knock(request):
-    email = request.GET.get('email', None)
-    print 'email: ' + str(email)
-    user = accounts.user_for_email(email)
-    print 'user : ' + str(user)
-    apple_devices = user.apple_devices.all()
-    print 'users devices: ' + str(apple_devices)
+    form = KnockForm(request.POST)
 
-    apple_devices = AppleDevice.objects.all()
-    print 'all devices: ' + str(apple_devices)
+    if not form.is_valid():
+        return HttpResponse(json.dumps({'success': False, 'message': form.errors}), mimetype='application/json')
+
+    email = form.cleaned_data.get('email', None)
+    user = accounts.user_for_email(email)
+    apple_devices = user.apple_devices.all()
 
     apple_tokens = []
 

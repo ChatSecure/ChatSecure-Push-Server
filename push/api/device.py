@@ -16,14 +16,19 @@ def register_device(request):
     if not request.user.is_authenticated():
         raise PermissionDenied
 
+    user = request.user
+
     apple_push_token = request.POST.get('apple_push_token', None)
     device = None
     if apple_push_token is not None:
         device = device_for_apple_push_token(apple_push_token)
         if device is None:
             device = AppleDevice()
-            device.owner = request.user
-        if device.owner is not request.user:
+            device.owner = user
+            device.save()
+            user.apple_devices.add(device)
+            user.save()
+        if device.owner.pk != user.pk:
             raise PermissionDenied
         f = AppleDeviceForm(request.POST, instance=device)
         device = f.save()
