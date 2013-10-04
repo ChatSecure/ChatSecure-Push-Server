@@ -7,19 +7,23 @@ from devices.models import device_for_apple_push_token
 from devices.forms import AppleDeviceForm
 from devices.models import AppleDevice
 from django.forms.models import model_to_dict
+from django.contrib.auth.decorators import login_required
 
 
 @csrf_exempt
+@login_required
 def register_device(request):
     if request.method != 'POST':
         return HttpResponse(json.dumps({'success': False, 'message': 'POST requests only'}), mimetype='application/json')
     if not request.user.is_authenticated():
         raise PermissionDenied
 
+
     user = request.user
 
     apple_push_token = request.POST.get('apple_push_token', None)
     device = None
+    print apple_push_token
     if apple_push_token is not None:
         device = device_for_apple_push_token(apple_push_token)
         if device is None:
