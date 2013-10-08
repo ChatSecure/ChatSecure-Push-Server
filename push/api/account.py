@@ -19,18 +19,21 @@ def view_account(request):
 
     email = form.cleaned_data.get('email', None)
     password = form.cleaned_data.get('password', None)
-    create = form.cleaned_data.get('create', False)
 
     if email is None or password is None:
         return HttpResponse(json.dumps({'success': False, 'message': 'Missing required parameters email or password'}), mimetype='application/json')
 
-    user = accounts.user_for_email(email)
-    success_message = 'Login Successful'
-    if user is None and create is True:
+    userExists = accounts.user_for_email(email=email)
+    user = authenticate(username=email, password=password)
+    
+    if user is None and userExists is None:
         success_message = 'Account Creation Successful'
         user = PushUser.objects.create_user(username=email, email=email, password=password)
 
-    user = authenticate(username=email, password=password)
+    if user is None and userExists:
+        return HttpResponse(json.dumps({'success': False, 'message': 'User already Exists, incorrect password'}), mimetype='application/json')
+
+    success_message = 'Login Successful'
     if user is not None:
         if user.is_active:
             login(request, user)
