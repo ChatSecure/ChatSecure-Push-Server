@@ -35,7 +35,7 @@ Step 2 - Alice sends `push_info` to Bob over OTR TLV or other encrypted channel.
 
 **Alice goes offline**
 
-Step 3 - Bob sends the `white_list_token` he reivieved from Alice to Alice's ChatSecure Push Server.
+Step 3 - Bob sends the `white_list_token` he received from Alice to Alice's ChatSecure Push Server.
 
 Step 4 - ChatSecure Push Server sends `white_list_token` in `push_payload` to Alice.
 
@@ -71,11 +71,11 @@ Similar to Level 2 but both Alice and Bob's clients and servers understand the C
 
 ### Google / Facebook / Other XMPP
 
-Alice is using a third party service like Google or Facebook but still wants to recieve push notifications to an app the supports the ChatSecure Push Protocol. This is not ideal and works around XMPP limitations and has privacy issues.
+Alice is using a third party service like Google or Facebook but still wants to receive push notifications to an app the supports the ChatSecure Push Protocol. This is not ideal and works around XMPP limitations and has privacy issues.
 
 ![Google / Facebook / Other XMPP](./Images/ChatSecure_Push-Level Google+Facebook+XMPP.png)
 
-ChatSecure Thin Client is a server that signs into your account pretending to be a client in order to recieve messages.
+ChatSecure Thin Client is a server that signs into your account pretending to be a client in order to receive messages.
 
 Step 1 - Alice retrieves new `white_list_token` for the ChatSecure Thin Client from ChatSecure Push Server.
 
@@ -85,7 +85,7 @@ Step 3 - ChatSecure Thin Client connects to Alice's XMPP Server as a client.
 
 **Alice goes offline**
 
-Setp 4 - Bob Sends Alice a normal XMPP message
+Step 4 - Bob Sends Alice a normal XMPP message
 
 Step 5 - ChatSeucre Thin Client sends `white_list_token` to ChatSecure Push Server
 
@@ -96,7 +96,7 @@ Alice now knows that a message can be retrieved either from the ChatSecure Thin 
 
 ## Sending Push Notification to Offline Contact
 
-1. If Alice is offline and Bob wants to send her a notificiation, create a notification with the following info:
+1. If Alice is offline and Bob wants to send her a notification, create a notification with the following info:
 	* Token: Alice's `white_list_token`
 	* Payload: Any other info that should be passed to Alice. May get truncated because of push notification size limit.
 2. Send full payload to Alice's `api_endpoint`.
@@ -105,17 +105,17 @@ Alice now knows that a message can be retrieved either from the ChatSecure Thin 
 
 ###Apple Push Notifications
 
-#####Content Avaliable
+#####Content Available
 
 
 #####Normal Push
 
 1. `white_list_token` received looks up `account_name` and sends push notification.
-2. Send push notification whith `white_list_token` in `push_payload` to every `push_token`.
+2. Send push notification with `white_list_token` in `push_payload` to every `push_token`.
 
 ## Receiving a Push Notification
 
-Alice revieves a push notification
+Alice receives a push notification
 
 ### Apple Push Notifications
 
