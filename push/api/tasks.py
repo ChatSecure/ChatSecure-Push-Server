@@ -13,12 +13,17 @@ con = session.get_connection("push_sandbox", cert_file=settings.APNS_DEV_CERT_PA
 
 
 @task(ignore_result=True)
-def apns_push(tokens=None, message=''):
+def apns_push(tokens=None, message='', sender='', recipient=''):
     if tokens is None or len(tokens) == 0:
         return None
     print 'pushing to : ' + str(tokens)
     # New message to 3 devices. You app will show badge 10 over app's icon.
-    message = Message(tokens, alert=message, badge=1)
+    payload_dictionary = {'aps':{'content-available':True},'from':sender,'to':recipient}
+    if len(message):
+        payload_dictionary = {'aps':{'alert':message,'content-available':True},'from':sender,'to':recipient}
+
+    print payload_dictionary
+    message = Message(tokens,payload=payload_dictionary)
 
     # Send the message.
     srv = APNs(con)

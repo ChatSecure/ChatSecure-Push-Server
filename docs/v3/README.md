@@ -14,36 +14,36 @@ For the purposes of this document you are assumed to be Alice and your buddy is 
 * `push_token` - Device-specific unique push token. Example: APNS token.
 * `knock` - Message designed to wake device and establish new OTR session.
 * `shared_key` - Symmetric key shared between Bob and Alice.
+* `whitelist_token` - token used for the push server to identify the correct `push_name`. Each token is unique to a given `buddy_name` and `account_name` and is refreshed periodically.
 
 ## Register Alice with App's Push Server
 
 1. Create or login account with desired `push_name` and `password` w/ OAuth. `email_address` is optional during account creation and used for password recovery.
 2. Optional: Fund `push_name` with in-app purchase or 'anonymously' via Bitcoin.
 3. Register `push_token` with `push_name`.
+4. Request bulk list of valid `whitelist_token`s and store on device
 
 ## Initial Exchange over OTR TLV
 
 1. Ask user to initiate Push handshake. If yes, continue.
-2. Alice sends Bob `push_name` and `api_endpoint`.
-3. Bob sends Alice `push_name` and `api_endpoint`.
+2. Alice sends Bob a `whitelist_token` and `api_endpoint`.
+3. Bob sends Alice a `whitelist_token` and `api_endpoint`.
 4. Generate OTRv3's out of band `shared_key`, and store it securely on each client with:
 	* Alice's `protocol`
 	* Alice's `account_name`
 	* Alice's `push_name`
+	* Alice's `whitelist_token`
 	* Alice's `api_endpoint`
 	* Bob's `buddy_name`
-	* Bob's `push_name`
+	* Bob's `whitelist_token`
 	* Bob's `api_endpoint`
 
 ## Sending Knock to Offline Contact
 
 1. If Bob is offline, create a `knock` with the following info:
-	* To: Bob's `api_endpoint` and Bob's `push_name`
-	* From: Alice's `api_endpoint` and Alice's `push_name`
-	* Encrypted with `shared_key`: 
-		* `protocol`
-		* Alice's `account_name`
-		* Bob's `buddy_name`
+	* To: Bob's `api_endpoint` and Bob's `whitelist_token`
+	* timestamp: `yyyy-MM-dd HH:mm:ss`
+	* HMAC-SHA-256 signature
 2. Send full payload to Alice's `api_endpoint`.
 
 ## Server-to-Server Communication
@@ -54,13 +54,14 @@ For the purposes of this document you are assumed to be Alice and your buddy is 
 
 ## Server-to-Client Communication
 
-1. `knock` received and uses Bob's `push_name` to look up every `push_token` associated with Bob's account.
+1. `knock` received and uses Bob's `whitelist_token` to look up every `push_token` associated with Bob's `push_name`.
 2. Send push notification with `knock` to every `push_token`.
 
 ## Receiving Knock
 
-1. Look up `shared_key` from the 'public' To/From information in the knock.
-2. Decrypt the encrypted information in the knock to determine which `protocol` and `account_name` to login, and which `buddy_name` to establish a new OTR session.
+1. Look up `shared_key` from the 'public' From `whitelist_token` information in the knock.
+2. Verify the HMAC-SHA-256 signature.
+3. Look up associated `account_name`, `protocol` and `buddy_name` for the `whitelist_token`
 3. Login with `account_name` for `protocol`.
-4. Establish new OTR session with `buddy_name` and generate and exchange new `shared_key`.
+4. Establish new OTR session with `buddy_name` and generate and exchange new `shared_key` and `whitelist_token`.
 5. Exchange secure messages. Yay!

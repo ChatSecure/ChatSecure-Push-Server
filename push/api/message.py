@@ -13,8 +13,8 @@ from api.forms import MessageForm
 @require_POST
 @csrf_exempt
 def send_message(request):
-	#if not request.user.is_authenticated():
-		#raise PermissionDenied
+	if not request.user.is_authenticated():
+		raise PermissionDenied
 	#print request
 
 	params = json.loads(request.body)
@@ -42,7 +42,8 @@ def send_message(request):
 		apple_tokens.append(device.apple_push_token)
 
 	if len(apple_tokens) > 0:
-		apns_push.delay(tokens=apple_tokens, message=text)
+		#apns_push.delay(tokens=apple_tokens, message=text, sender=request.user.username,recipient=email)
+		apns_push.delay(tokens=apple_tokens, message=text, sender='davidchiles@swissjabber.eu',recipient='fake.david.chiles@gmail.com')
 	return HttpResponse(json.dumps({'success': True, 'message': 'Sent the message'}), mimetype='application/json')
 
 

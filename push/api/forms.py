@@ -7,4 +7,4 @@ class KnockForm(forms.Form):
 
 class MessageForm(forms.Form):
 	email = forms.EmailField()
-	text = forms.CharField()
+	text = forms.CharField(required=False)
