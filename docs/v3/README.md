@@ -51,7 +51,7 @@ Alice now knows which buddy is trying to start a conversation because the `white
 
 Alice has a client that understands the ChatSecure Push Protocol and so does Alice's server. Bob has a normal XMPP client and Server or both understand the ChatSecure Push Protocol.
 
-![Level 1](./Images/ChatSecure_Push-Level_2.png)
+![Level 2](./Images/ChatSecure_Push-Level_2.png)
 
 Step 1 - Alice retrieves new `white_list_token` for Alice's XMPP Server from ChatSecure Push Server.
 
@@ -73,7 +73,7 @@ Similar to Level 2 but both Alice and Bob's clients and servers understand the C
 
 Alice is using a third party service like Google or Facebook but still wants to recieve push notifications to an app the supports the ChatSecure Push Protocol. This is not ideal and works around XMPP limitations and has privacy issues.
 
-![Level 1](./Images/ChatSecure_Push-Level Google+Facebook+XMPP.png)
+![Google / Facebook / Other XMPP](./Images/ChatSecure_Push-Level Google+Facebook+XMPP.png)
 
 ChatSecure Thin Client is a server that signs into your account pretending to be a client in order to recieve messages.
 
