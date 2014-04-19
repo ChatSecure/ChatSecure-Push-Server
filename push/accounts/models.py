@@ -3,8 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 
 class PushUser(AbstractUser):
-    apple_devices = models.ManyToManyField('devices.AppleDevice')
-
+    expiration_date = models.DateField()
 
 def user_for_email(email=None):
     if email is None:

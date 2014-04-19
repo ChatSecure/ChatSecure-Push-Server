@@ -122,7 +122,6 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
@@ -130,14 +129,26 @@ INSTALLED_APPS = (
 
     # 3rd Party
     'south',
+    'oauth2_provider',
+    'rest_framework',
+    'djcelery',
+
 
     # ChatSecure Push
     'accounts',
     'api',
     'devices',
-    'djcelery',
-
+    'apps',
+    'tokens',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
+    )
+}
+
+OAUTH2_PROVIDER_APPLICATION_MODEL='apps.PushApplication'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
