@@ -1,3 +1,4 @@
 from django.contrib import admin
+from apps.models import PushApplication
 
-# Register your models here.
+#admin.site.register(PushApplication)

@@ -62,6 +62,10 @@ Download your SSL cert(s) from the Apple Provisioning Portal and convert them to
 Copy the private key into the cert file because `apns-client` likes them in the same file.
 
 	$ cat ChatSecureDevCert.pem ChatSecureDevKey.pem > Certificate.pem
+	
+To remove password on private key:
+
+    $ openssl rsa -in enc_privkey.pem -out privkey.pem
     
 ### local_settings.py
 

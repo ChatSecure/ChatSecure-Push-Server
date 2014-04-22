@@ -24,12 +24,4 @@ DATABASES = {
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
 
-# Get this from iTunes Connect
-IAP_SHARED_SECRET = ''
-
-APNS_CERT_PATH = ''
-APNS_PASSPHRASE = ''
-APNS_DEV_CERT_PATH = ''
-APNS_DEV_PASSPHRASE = ''
-
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'

@@ -3,3 +3,6 @@
 .DS_Store
 local_settings.py
 private_keys
+
+# PyCharm IDE
+.idea/workspace.xml

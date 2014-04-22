@@ -1,3 +1,4 @@
 from django.contrib import admin
+from tokens.models import WhitelistToken
 
-# Register your models here.
+admin.site.register(WhitelistToken)

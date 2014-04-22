@@ -144,11 +144,15 @@ INSTALLED_APPS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'oauth2_provider.ext.rest_framework.OAuth2Authentication',
-    )
+    ),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'PAGINATE_BY': 10
 }
 
-OAUTH2_PROVIDER_APPLICATION_MODEL='apps.PushApplication'
+OAUTH2_PROVIDER_APPLICATION_MODEL = 'apps.PushApplication'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
