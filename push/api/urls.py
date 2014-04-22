@@ -1,10 +1,12 @@
 from django.conf.urls import patterns, include, url
 from rest_framework.routers import DefaultRouter
 from devices.views import DeviceViewSet
+from tokens.views import WhitelistTokenViewSet
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(prefix=r'devices', viewset=DeviceViewSet, base_name='device')
+router.register(prefix=r'tokens', viewset=WhitelistTokenViewSet, base_name='token')
 
 urlpatterns = patterns('',
     url(r'^', include(router.urls)),

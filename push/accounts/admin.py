@@ -2,7 +2,6 @@ from django.contrib import admin
 from accounts.models import PushUser
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 from django.forms import forms
 
 
@@ -33,7 +32,7 @@ class PushUserAdmin(UserAdmin):
     add_form = PushUserCreationForm
 
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('expiration_date',)}),
+            (None, {'fields': ('expiration_date', 'app',)}),
     )
 
 admin.site.register(PushUser, PushUserAdmin)

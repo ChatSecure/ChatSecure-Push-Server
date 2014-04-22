@@ -8,8 +8,6 @@ class DeviceViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
-
-    Additionally we also provide an extra `highlight` action.
     """
     serializer_class = DeviceSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
