@@ -23,10 +23,6 @@ For the purposes of this document you are assumed to be Alice and your buddy is 
 3. Register `push_token` with `push_name`.
 
 
-### Register Alice's Device with Push Server
-
-Alice registers her device's `push_token` with the server.
-
 ### Level 1
 
 Both Alice and Bob are using clients that understand the ChatSecure Push Protocol.
@@ -51,11 +47,6 @@ Alice now knows which buddy is trying to start a conversation because the `white
 2. Alice sends Bob `push_info`.
 3. Bob sends Alice `push_info`.
 
-#### Token Rotation
-
-Because the `white_list_token` is sent in the clear to Apple, we should have clients renegotiate and rotate tokens whenever they are able.
-
-
 ### Level 2
 
 Alice has a client that understands the ChatSecure Push Protocol and so does Alice's server. Bob has a normal XMPP client and Server or both understand the ChatSecure Push Protocol.
@@ -73,6 +64,9 @@ Step 3 - Bob sends Alice a normal XMPP Message.
 Step 4 - Alice's XMPP Server sends `white_list_token` to ChatSecure Push Server.
 
 Step 5 - ChatSecure Push Server sends `white_list_token` in `push_payload` to Alice.
+
+#### Pure XMPP
+Instead of Alice's XMPP server connecting to the ChatSecure server through an API it could use an XMPP connection following [legatero](https://github.com/legastero)'s work on [XMPP push](https://github.com/legastero/customxeps/blob/gh-pages/extensions/push.md). This would require the ChatSecure Push Server to run an XMPP server in addition to the push API.
 
 ### Level 3
 
@@ -119,8 +113,8 @@ Alice now knows that a message can be retrieved either from the ChatSecure Thin 
 
 #####Normal Push
 
-1. `white_list_token` received looks up `account_name`.
-2. Send push notification with `white_list_token` in `push_payload` to every `push_token` for `account_name`.
+1. `white_list_token` received looks up `account_name` and sends push notification.
+2. Send push notification with `white_list_token` in `push_payload` to every `push_token`.
 
 ## Receiving a Push Notification
 
