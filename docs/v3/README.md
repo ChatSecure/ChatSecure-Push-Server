@@ -18,6 +18,8 @@ For the purposes of this document you are assumed to be Alice and your buddy is 
 
 ### Register Alice with App's Push Server
 
+Alice registers her device's `push_token` with the server.
+
 1. Create or login account with desired `push_name` and `password` w/ OAuth. `email_address` is optional during account creation and used for password recovery.
 2. Optional: Fund `push_name` with in-app purchase or 'anonymously' via Bitcoin.
 3. Register `push_token` with `push_name`.
@@ -46,6 +48,9 @@ Alice now knows which buddy is trying to start a conversation because the `white
 1. Ask user to initiate Push handshake. If yes, continue.
 2. Alice sends Bob `push_info`.
 3. Bob sends Alice `push_info`.
+
+#### Token Rotation
+Because the `white_list_token` is sent in the clear to Apple, we should have clients renegotiate and rotate tokens whenever they are able.
 
 ### Level 2
 
