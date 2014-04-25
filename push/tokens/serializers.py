@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from tokens.models import WhitelistToken
+from tokens.models import Token
 
 
-class WhitelistTokenSerializer(serializers.ModelSerializer):
+class TokenSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = WhitelistToken
-        fields = ('id', 'name', 'token',)
+        model = Token
+        fields = ('id', 'url', 'name', 'token',)
         read_only_fields = ('token',)

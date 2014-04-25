@@ -1,4 +1,4 @@
 from django.contrib import admin
-from tokens.models import WhitelistToken
+from tokens.models import Token
 
-admin.site.register(WhitelistToken)
+admin.site.register(Token)

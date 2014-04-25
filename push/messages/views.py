@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from messages.serializers import MessageSerializer
 from apnsclient import *
-from tokens.models import WhitelistToken
+from tokens.models import Token
 
 session = Session()
 
@@ -27,7 +27,7 @@ class MessagesViewSet(viewsets.ViewSet):
 
         if serializer.is_valid():
             token_string = serializer.data.get('whitelist_token', None)
-            token = WhitelistToken.objects.get(token=token_string)
+            token = Token.objects.get(token=token_string)
             recipient = token.owner
 
             apns_tokens = []

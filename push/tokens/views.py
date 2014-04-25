@@ -1,15 +1,17 @@
 from rest_framework import viewsets
 from rest_framework import permissions
-from tokens.models import WhitelistToken
-from tokens.serializers import WhitelistTokenSerializer
+from tokens.models import Token
+from tokens.serializers import TokenSerializer
+import binascii
+import os
 
 
-class WhitelistTokenViewSet(viewsets.ModelViewSet):
+class TokenViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
     """
-    serializer_class = WhitelistTokenSerializer
+    serializer_class = TokenSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_queryset(self):
@@ -18,7 +20,9 @@ class WhitelistTokenViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         user = self.request.user
-        return WhitelistToken.objects.filter(owner=user)
+        return Token.objects.filter(owner=user)
 
     def pre_save(self, obj):
         obj.owner = self.request.user
+        if not obj.token:
+            obj.token = binascii.hexlify(os.urandom(20))
