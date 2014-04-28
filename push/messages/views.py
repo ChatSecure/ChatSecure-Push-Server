@@ -1,6 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import permissions
 from messages.serializers import MessageSerializer
 from apnsclient import *
 from tokens.models import Token
@@ -17,6 +18,7 @@ class MessagesViewSet(viewsets.ViewSet):
     the `format=None` keyword argument for each action.
     """
 
+    permission_classes = (permissions.AllowAny,)
 
 
     def create(self, request):

@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework import permissions
 from devices.models import Device
 from devices.serializers import DeviceSerializer
+from api.permissions import OwnerOnlyPermission
 
 
 class DeviceViewSet(viewsets.ModelViewSet):
@@ -10,7 +11,7 @@ class DeviceViewSet(viewsets.ModelViewSet):
     `update` and `destroy` actions.
     """
     serializer_class = DeviceSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, OwnerOnlyPermission)
 
     def get_queryset(self):
         """

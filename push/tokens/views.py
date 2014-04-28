@@ -4,6 +4,7 @@ from tokens.models import Token
 from tokens.serializers import TokenSerializer
 import binascii
 import os
+from api.permissions import OwnerOnlyPermission
 
 
 class TokenViewSet(viewsets.ModelViewSet):
@@ -12,7 +13,7 @@ class TokenViewSet(viewsets.ModelViewSet):
     `update` and `destroy` actions.
     """
     serializer_class = TokenSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, OwnerOnlyPermission)
 
     def get_queryset(self):
         """
