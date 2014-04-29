@@ -27,10 +27,11 @@ class AccountViewSet(viewsets.ViewSet):
             if existing_user is not None:
                 return Response(error,
                                 status=status.HTTP_400_BAD_REQUEST)
-            existing_users = PushUser.objects.filter(app__pk=application.pk, email=email)
-            if len(existing_users) > 0:
-                return Response(error,
-                                status=status.HTTP_400_BAD_REQUEST)
+            if len(email) > 0:
+                existing_users = PushUser.objects.filter(app__pk=application.pk, email=email)
+                if len(existing_users) > 0:
+                    return Response(error,
+                                    status=status.HTTP_400_BAD_REQUEST)
             user = PushUser.objects.create_user(email=email, username=username, password=password)
             user.app = application
             user.save()
