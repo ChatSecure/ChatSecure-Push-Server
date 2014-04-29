@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from accounts.models import PushUser
 
+
 class CreateUserSerializer(serializers.Serializer):
     client_id = serializers.CharField(max_length=100)
     email = serializers.EmailField(max_length=100, required=False)

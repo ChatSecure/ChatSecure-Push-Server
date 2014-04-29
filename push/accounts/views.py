@@ -7,6 +7,20 @@ from apps.models import PushApplication
 
 
 class AccountViewSet(viewsets.ViewSet):
+
+    def retrieve(self, request, pk=None):
+        try:
+            user = PushUser.objects.get(pk=pk)
+        except PushUser.DoesNotExist:
+            return Response(status.HTTP_404_NOT_FOUND)
+        if user.pk != request.user.pk:
+            return Response(status.HTTP_403_FORBIDDEN)
+        user_serializer = UserSerializer(user)
+        return Response(user_serializer.data)
+
+    def list(self, request):
+        return self.retrieve(request, request.user.pk)
+
     def create(self, request):
         serializer = CreateUserSerializer(data=request.DATA)
         if serializer.is_valid():
