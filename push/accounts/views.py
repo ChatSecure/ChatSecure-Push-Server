@@ -18,6 +18,7 @@ class AccountViewSet(viewsets.ViewSet):
                                 status=status.HTTP_400_BAD_REQUEST)
             email = serializer.data['email']
             username = serializer.data['username']
+            password = serializer.data['password']
             error = {'error': 'Account already exists.'}
             try:
                 existing_user = PushUser.objects.get(username=username)
@@ -30,8 +31,7 @@ class AccountViewSet(viewsets.ViewSet):
             if len(existing_users) > 0:
                 return Response(error,
                                 status=status.HTTP_400_BAD_REQUEST)
-            user = PushUser(email=email, username=username)
-            user.set_password(serializer.data['password'])
+            user = PushUser.objects.create_user(email=email, username=username, password=password)
             user.app = application
             user.save()
             user_serializer = UserSerializer(user)
