@@ -154,6 +154,11 @@ REST_FRAMEWORK = {
 
 OAUTH2_PROVIDER_APPLICATION_MODEL = 'apps.PushApplication'
 
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    #'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+}
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
