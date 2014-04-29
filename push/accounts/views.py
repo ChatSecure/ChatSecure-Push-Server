@@ -1,0 +1,41 @@
+from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import status
+from accounts.models import PushUser
+from accounts.serializers import CreateUserSerializer, UserSerializer
+from apps.models import PushApplication
+
+
+class AccountViewSet(viewsets.ViewSet):
+    def create(self, request):
+        serializer = CreateUserSerializer(data=request.DATA)
+        if serializer.is_valid():
+            client_id = serializer.data['client_id']
+            try:
+                application = PushApplication.objects.get(client_id=client_id)
+            except PushApplication.DoesNotExist:
+                return Response({'error': 'Application does not exist.'},
+                                status=status.HTTP_400_BAD_REQUEST)
+            email = serializer.data['email']
+            username = serializer.data['username']
+            error = {'error': 'Account already exists.'}
+            try:
+                existing_user = PushUser.objects.get(username=username)
+            except PushUser.DoesNotExist:
+                existing_user = None
+            if existing_user is not None:
+                return Response(error,
+                                status=status.HTTP_400_BAD_REQUEST)
+            existing_users = PushUser.objects.filter(app__pk=application.pk, email=email)
+            if len(existing_users) > 0:
+                return Response(error,
+                                status=status.HTTP_400_BAD_REQUEST)
+            user = PushUser(email=email, username=username)
+            user.set_password(serializer.data['password'])
+            user.app = application
+            user.save()
+            user_serializer = UserSerializer(user)
+            return Response(user_serializer.data)
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
