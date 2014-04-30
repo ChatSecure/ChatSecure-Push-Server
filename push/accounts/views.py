@@ -4,9 +4,12 @@ from rest_framework import status
 from accounts.models import PushUser
 from accounts.serializers import CreateUserSerializer, UserSerializer
 from apps.models import PushApplication
+from rest_framework import permissions
 
 
 class AccountViewSet(viewsets.ViewSet):
+
+    permission_classes = (permissions.AllowAny,)
 
     def retrieve(self, request, pk=None):
         try:
