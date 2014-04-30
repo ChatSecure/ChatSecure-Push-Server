@@ -21,6 +21,8 @@ class TokenViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         user = self.request.user
+        if not user.is_authenticated():
+            return []
         return Token.objects.filter(owner=user)
 
     def pre_save(self, obj):

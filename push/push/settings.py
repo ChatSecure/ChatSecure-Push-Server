@@ -148,7 +148,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
     'PAGINATE_BY': 10
 }
 
