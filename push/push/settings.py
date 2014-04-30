@@ -159,6 +159,11 @@ OAUTH2_PROVIDER = {
     #'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
 }
 
+CHATSECURE_PUSH = {
+    # Set this to false when debugging to not use Celery
+    'USE_MESSAGE_QUEUE': True
+}
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.

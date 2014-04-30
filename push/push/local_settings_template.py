@@ -25,3 +25,8 @@ DATABASES = {
 SECRET_KEY = ''
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+
+CHATSECURE_PUSH = {
+    # Set this to false when debugging to not use Celery
+    'USE_MESSAGE_QUEUE': False
+}
