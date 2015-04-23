@@ -1,5 +1,3 @@
-import djcelery
-djcelery.setup_loader()
 # Django settings for push project.
 
 DEBUG = False
@@ -128,11 +126,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
 
     # 3rd Party
-    'south',
-    'oauth2_provider',
     'rest_framework',
-    'djcelery',
-
 
     # ChatSecure Push
     'accounts',
@@ -146,17 +140,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
     'PAGINATE_BY': 10
-}
-
-OAUTH2_PROVIDER_APPLICATION_MODEL = 'apps.PushApplication'
-
-OAUTH2_PROVIDER = {
-    # this is the list of available scopes
-    #'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
 }
 
 CHATSECURE_PUSH = {
