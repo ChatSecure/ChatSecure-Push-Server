@@ -5,4 +5,5 @@ local_settings.py
 private_keys
 
 # PyCharm IDE
-.idea/workspace.xml
+**/.idea/workspace.xml
+**/.idea/tasks.xml
