@@ -32,7 +32,7 @@ class PushUserAdmin(UserAdmin):
     add_form = PushUserCreationForm
 
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('expiration_date', 'app',)}),
+            (None, {'fields': ('expiration_date',)}),
     )
 
 admin.site.register(PushUser, PushUserAdmin)

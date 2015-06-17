@@ -127,12 +127,11 @@ INSTALLED_APPS = (
 
     # 3rd Party
     'rest_framework',
+    'push_notifications',
 
     # ChatSecure Push
     'accounts',
     'api',
-    'devices',
-    'apps',
     'tokens',
 )
 

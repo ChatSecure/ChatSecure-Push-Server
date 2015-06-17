@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from accounts.models import PushUser
 from accounts.serializers import CreateUserSerializer, UserSerializer
-from apps.models import PushApplication
 from rest_framework import permissions
 
 
@@ -27,12 +26,6 @@ class AccountViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = CreateUserSerializer(data=request.DATA)
         if serializer.is_valid():
-            client_id = serializer.data['client_id']
-            try:
-                application = PushApplication.objects.get(client_id=client_id)
-            except PushApplication.DoesNotExist:
-                return Response({'error': 'Application does not exist.'},
-                                status=status.HTTP_400_BAD_REQUEST)
             email = serializer.data['email']
             username = serializer.data['username']
             password = serializer.data['password']
@@ -45,12 +38,11 @@ class AccountViewSet(viewsets.ViewSet):
                 return Response(error,
                                 status=status.HTTP_400_BAD_REQUEST)
             if len(email) > 0:
-                existing_users = PushUser.objects.filter(app__pk=application.pk, email=email)
+                existing_users = PushUser.objects.filter(email=email)
                 if len(existing_users) > 0:
                     return Response(error,
                                     status=status.HTTP_400_BAD_REQUEST)
             user = PushUser.objects.create_user(email=email, username=username, password=password)
-            user.app = application
             user.save()
             user_serializer = UserSerializer(user)
             return Response(user_serializer.data)

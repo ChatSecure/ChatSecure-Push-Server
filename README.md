@@ -32,25 +32,6 @@ Then you will need to install the following dependencies:
 	(push)$ cd /path/to/ChatSecure-Push-Server/
 	(push)$ pip install -r requirements.txt
 	
-This will install the following dependencies:
-
-```
-Django==1.5.1
-South==0.8.1
-amqp==1.0.12
-anyjson==0.3.3
-apns-client==0.1.6
-billiard==2.7.3.31
-celery==3.0.21
-django-celery==3.0.17
-kombu==2.5.12
-psycopg2==2.5
-pyOpenSSL==0.13
-python-dateutil==2.1
-pytz==2013b
-six==1.3.0
-wsgiref==0.1.2
-```
     
 Setup
 ---------
@@ -85,8 +66,7 @@ Copy `local_settings_template.py` to `local_settings.py`. Fill in the following 
 
 You need to sync your database before you can do anything.
 
-    (push)$ python manage.py syncdb
-    (push)$ python manage.py migrate djcelery
+    (push)$ python manage.py migrate
     
 ### Running (Development)  
 
@@ -118,7 +98,7 @@ License
 ---------
 
 	ChatSecure Push Server
-	Copyright (C) 2013 Chris Ballinger <chris@chatsecure.org>
+	Copyright (C) 2015 Chris Ballinger <chris@chatsecure.org>
 	
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as
