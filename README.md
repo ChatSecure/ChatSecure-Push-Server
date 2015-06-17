@@ -6,12 +6,17 @@ An experimental design for a privacy-minded push server.
 Installation
 ------------
 
-You will need to install Postgres using the method of your choosing:
+You will need to install RabbitMQ, Postgres, and pip using the method of your choosing:
 
-On Mac use [Postgres.app](http://postgresapp.com) for its ease or use Homebrew to install a more recent version `brew install postgres`. On Linux, install the latest version of Postgres with the package manager of your choice.
+RabbitMQ is available via Homebrew.
+
+    $ brew install rabbitmq
+
+Postgres is available on Mac with [Postgres.app](http://postgresapp.com) but more readily upgradeable when installed via Homebrew with `brew install postgres`. On Linux, install the latest version of Postgres with the package manager of your choice.
 
 If you don't have the latest version of Python 2.7 and pip, get them.
 
+    $ brew install python (Mac. On Linux, use the package manager of your choice)
     $ easy_install pip
 
 ### Virtual Environment
