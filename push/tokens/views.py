@@ -25,7 +25,7 @@ class TokenViewSet(viewsets.ModelViewSet):
             return []
         return Token.objects.filter(owner=user)
 
-    def pre_save(self, obj):
-        obj.owner = self.request.user
-        if not obj.token:
-            obj.token = binascii.hexlify(os.urandom(20))
+    def perform_create(self, serializer):
+
+        # TODO : We should catch the event where the resulting token violates unique column constraint
+        serializer.save(owner=self.request.user, token=binascii.hexlify(os.urandom(20)))
