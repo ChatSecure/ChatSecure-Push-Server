@@ -9,6 +9,7 @@ from rest_framework import permissions
 class AccountViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.AllowAny,)
+    serializer_class = UserSerializer
 
     def retrieve(self, request, pk=None):
         try:
