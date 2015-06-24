@@ -10,6 +10,7 @@ from push_notifications.models import APNSDevice, GCMDevice
 class MessagesViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.AllowAny,)
+    serializer_class = MessageSerializer
 
     def create(self, request):
         serializer = MessageSerializer(data=request.DATA)
@@ -39,5 +40,8 @@ def send_message(token=None, data=None, broadcast=True):
     else:
         apns_device = token.apns_device
         gcm_device = token.gcm_device
-        apns_device.send_message("Hello")
-        gcm_device.send_message("Hello")
+
+        if apns_device:
+            apns_device.send_message("Hello")
+        elif gcm_device:
+            gcm_device.send_message("Hello")
