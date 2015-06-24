@@ -4,6 +4,7 @@ from rest_framework import status
 from accounts.models import PushUser
 from accounts.serializers import CreateUserSerializer, UserSerializer
 from rest_framework import permissions
+from rest_framework.authtoken.models import Token
 
 
 class AccountViewSet(viewsets.ViewSet):
@@ -45,8 +46,11 @@ class AccountViewSet(viewsets.ViewSet):
                                     status=status.HTTP_400_BAD_REQUEST)
             user = PushUser.objects.create_user(email=email, username=username, password=password)
             user.save()
+            token = Token.objects.create(user=user)
             user_serializer = UserSerializer(user)
-            return Response(user_serializer.data)
+            response_data = user_serializer.data
+            response_data['token'] = token.key
+            return Response(response_data)
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
