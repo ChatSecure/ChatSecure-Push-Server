@@ -38,20 +38,42 @@ Setup
 
 ### APNS SSL Certificates
 
-Download your SSL cert(s) from the Apple Provisioning Portal and convert them to the PEM format and put them somewhere:
+Each iOS client application requires separate APNS SSL Certificates for development and production environments. The process below is for a single certificate.
 
-    $ openssl x509 -in ChatSecureDevCert.cer -inform der -out ChatSecureDevCert.pem
+1. Obtained a signed SSL cert from the Apple Provisioning Portal. We'll refer to this cert as `DevCert.cer`.
     
-    $ openssl pkcs12 -nocerts -out ChatSecureDevKey.pem -in ChatSecureDevKey.p12
-    $ (set a strong passphrase here, remember this for APNS_PASSPHRASE in local_settings.py)
-    
-Copy the private key into the cert file because `apns-client` likes them in the same file.
+    1. Go to [iOS Identifiers](https://developer.apple.com/account/ios/identifiers/bundle/bundleList.action) and create an entry for your application namespace. 
+    1. Select the newly created identifier and then `Edit` from the bottom of the page. Select `Push Notifications` and then `Create Certificate`. This will provide instructions for generating and uploading a `.certSigningRequest` file created with Keychain Access on your Mac. 
+    1. Upload the `.certSigningRequest` and download the signed SSL cert as `DevCert.cer`
 
-	$ cat ChatSecureDevCert.pem ChatSecureDevKey.pem > Certificate.pem
+2. Convert your Apple-issued `DevCert.cer` to `DevCert.pem`.
+
+    ```
+    $ openssl x509 -in DevCert.cer -inform der -out DevCert.pem
+    ```
+
+3. Export your Keychain Access-generated private key (from 1.ii) as `DevKey.p12`.
+
+    Open Keychain Access, and select `Keys` from the left pane. Select your certificate's Private Key entry and then `Export` to generate the `DevKey.p12` file.
+    
+4. Convert `DevKey.p12` private key to `DevKey.pem`
+
+    ```
+    $ openssl pkcs12 -nocerts -in DevKey.p12 -out DevKey.pem 
+    ```
+    
+5. Remove password on `DevKey.pem` private key, producing `DevKey.NoPassword.pem`:
+
+    ```
+    $ openssl rsa -in DevKey.pem -out DevKey.NoPassword.pem
+    ```
+
+6. Combine the no-password private key `DevKey.NoPassword.pem` with the Apple-issued and signed cert `DevCert.pem` into the cert file `Certificate.pem`:
+
+    ```
+    $ cat DevCert.pem DevKey.NoPassword.pem > Certificate.pem
+    ```
 	
-To remove password on private key:
-
-    $ openssl rsa -in enc_privkey.pem -out privkey.pem
     
 ### GCM API Key
 
@@ -64,13 +86,9 @@ To remove password on private key:
 
 Copy `local_settings_template.py` to `local_settings.py`. Fill in the following values:
 
- * `IAP_SHARED_SECRET`: This is if you will be validating In-App Purchases.
- * `APNS_CERT_PATH`: Path to your `Certificate.pem` file.
- * `APNS_PASSPHRASE`: Passphrase to decrypt the APNS SSL private key.
- * The `APNS_DEV_CERT_PATH`, and `APNS_DEV_PASSPHRASE` are the same as above but for the Sandbox mode.
- 
+ * `APNS_CERTIFICATE`: Path to your `Certificate.pem` file.
  * `GCM_API_KEY` : Your Google Cloud Messaging `Server Api Key`
- 
+
 ### Sync Database
 
 You need to sync your database before you can do anything.
