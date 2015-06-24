@@ -30,3 +30,9 @@ CHATSECURE_PUSH = {
     # Set this to false when debugging to not use Celery
     'USE_MESSAGE_QUEUE': False
 }
+
+PUSH_NOTIFICATIONS_SETTINGS = {
+    # See README.md for instructions for obtaining the APNS Certificate
+    # Note the value of APNS_CERTIFICATE should depend on DEBUG
+    #'APNS_CERTIFICATE' : '/Path/To/Certificate.pem'
+}
