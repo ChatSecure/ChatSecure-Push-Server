@@ -32,7 +32,10 @@ CHATSECURE_PUSH = {
 }
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-    # See README.md for instructions for obtaining the APNS Certificate
+    # See README.md for instructions for obtaining the APNS Certificate, and GCM API Key
+
     # Note the value of APNS_CERTIFICATE should depend on DEBUG
     #'APNS_CERTIFICATE' : '/Path/To/Certificate.pem'
+
+    #'GCM_API_KEY' : 'Your API Key'
 }

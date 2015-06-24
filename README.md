@@ -53,6 +53,13 @@ To remove password on private key:
 
     $ openssl rsa -in enc_privkey.pem -out privkey.pem
     
+### GCM API Key
+
+1. Create a Google Cloud Messaging application using [this wizard](https://developers.google.com/mobile/add). 
+2. You'll be prompted for an 'App name' and 'Android package name' (or 'iOS Bundle ID' if you're using GCM for iOS).
+3. You'll finally be prompted to choose your Google Services. For our purposes you'll only need 'Cloud Messaging'.
+4. The wizard will present a `Server API Key` which you copy to `local_settings.py` as `GCM_API_KEY`
+    
 ### local_settings.py
 
 Copy `local_settings_template.py` to `local_settings.py`. Fill in the following values:
@@ -61,6 +68,8 @@ Copy `local_settings_template.py` to `local_settings.py`. Fill in the following 
  * `APNS_CERT_PATH`: Path to your `Certificate.pem` file.
  * `APNS_PASSPHRASE`: Passphrase to decrypt the APNS SSL private key.
  * The `APNS_DEV_CERT_PATH`, and `APNS_DEV_PASSPHRASE` are the same as above but for the Sandbox mode.
+ 
+ * `GCM_API_KEY` : Your Google Cloud Messaging `Server Api Key`
  
 ### Sync Database
 
