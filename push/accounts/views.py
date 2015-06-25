@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 class AccountViewSet(viewsets.ViewSet):
 
     permission_classes = (permissions.AllowAny,)
-    serializer_class = UserSerializer
+    serializer_class = CreateUserSerializer
 
     def retrieve(self, request, pk=None):
         try:
@@ -39,7 +39,7 @@ class AccountViewSet(viewsets.ViewSet):
             if existing_user is not None:
                 return Response(error,
                                 status=status.HTTP_400_BAD_REQUEST)
-            if len(email) > 0:
+            if email is not None and len(email) > 0:
                 existing_users = PushUser.objects.filter(email=email)
                 if len(existing_users) > 0:
                     return Response(error,
