@@ -189,6 +189,12 @@ import dj_database_url
 
 DATABASES['default'] = dj_database_url.config()
 
+APNS_CERT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'private_keys/apns_cert.pem' )
+PUSH_NOTIFICATIONS_SETTINGS = {
+    'APNS_CERTIFICATE' : APNS_CERT,
+    'GCM_API_KEY' : os.environ.get('GCM_API_KEY', '')
+}
+
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

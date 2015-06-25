@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
 
+# Save APNS Certificate from environment to file
+mkdir private_keys
+echo $APNS_CERTIFICATE > ./private_keys/apns_cert.pem
+
 # Run Django migrations.
 python ./push/manage.py migrate
