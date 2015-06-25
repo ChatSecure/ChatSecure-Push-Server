@@ -176,6 +176,7 @@ import dj_database_url
 
 DATABASES['default'] = dj_database_url.config()
 
+# The APNS cert should be located at /ProjectRoot/private_keys/apns_cert.pem (../../../private_keys/apns_cert.pem)
 APNS_CERT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'private_keys/apns_cert.pem' )
 PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_CERTIFICATE' : APNS_CERT,
