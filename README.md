@@ -111,14 +111,48 @@ In another new terminal window:
     $ workon push # activate your virtual environment
     (push)$ python manage.py celery worker --loglevel=info # Start Celery workers
     
-### Running (Production)
+### Running (Heroku)
 
-TODO
+#### Setup
+
+First install the [Heroku toolbelt](https://toolbelt.heroku.com/) on your development machine.
+
+To set up a new Heroku instance, invoke the following from the project root:
+
+    $ heroku create appname
+
+To connect to an existing Heroku instance, invoke the following from the project root:
+
+    $ git remote add heroku git@heroku.com:appname.git
+    
+To modify the value of secret values (currently `GCM_API_KEY`, `APNS_CERTIFICATE`, `DJANGO_SECRET_KEY`, `DATABASE_URL`):
+
+    $ heroku config:set NAME=VALUE
+
+Note that we store the APNS certificate contents in `APNS_CERTIFICATE` and use the `post_compile` hook to copy its value into a certificate file.
+    
+To add commands that should be run before the `Procfile` is invoked, see `./bin/post_compile`. Currently we invoke `manage.py migrate`.
+
+#### Deploy
+
+Push to the Heroku remote's master branch to deploy.
+
+    $ git push heroku master
+    
+If you need to deploy a non-master local branch:
+
+    $ git push heroku localBranch:master
+    
+#### Maintain
+
+To run a command on the Heroku instance:
+
+    $ heroku run python push/manage.py some_command
     
 API Documentation
 -------------
 
-Check out `docs/v2/README.md` for now. The API is constantly in flux right now.
+Check out `docs/v3/README.md` for now. The API is constantly in flux right now.
     
 
 License
