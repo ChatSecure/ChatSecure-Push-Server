@@ -1,5 +1,5 @@
 Django==1.8.2
--e git+https://github.com/OnlyInAmerica/django-push-notifications.git@6befaf094030c30ea9eee886d5a0608b0a8b2ca7#egg=django_push_notifications
+django-push-notifications==1.3.1
 amqp==1.4.6
 anyjson==0.3.3
 apns-client==0.2.1
