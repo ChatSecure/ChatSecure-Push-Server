@@ -28,7 +28,7 @@ class AccountViewSet(viewsets.ViewSet):
     def create(self, request):
         serializer = CreateUserSerializer(data=request.DATA)
         if serializer.is_valid():
-            email = serializer.data['email']
+            email = serializer.data.get('email', None)
             username = serializer.data['username']
             password = serializer.data['password']
             error = {'error': 'Account already exists.'}
