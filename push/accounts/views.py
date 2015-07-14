@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.response import Response
 from rest_framework import status
 from accounts.models import PushUser
@@ -31,18 +32,16 @@ class AccountViewSet(viewsets.ViewSet):
             email = serializer.data.get('email', None)
             username = serializer.data['username']
             password = serializer.data['password']
-            error = {'error': 'Account already exists.'}
             try:
                 existing_user = PushUser.objects.get(username=username)
             except PushUser.DoesNotExist:
                 existing_user = None
             if existing_user is not None:
-                return Response(error,
-                                status=status.HTTP_400_BAD_REQUEST)
+                return obtain_auth_token(request)
             if email is not None and len(email) > 0:
                 existing_users = PushUser.objects.filter(email=email)
                 if len(existing_users) > 0:
-                    return Response(error,
+                    return Response({'error': 'An account with that email address already exists.'},
                                     status=status.HTTP_400_BAD_REQUEST)
             user = PushUser.objects.create_user(email=email, username=username, password=password)
             user.save()
