@@ -1,5 +1,4 @@
 from rest_framework import viewsets
-from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.response import Response
 from rest_framework import status
 from accounts.models import PushUser
@@ -37,7 +36,7 @@ class AccountViewSet(viewsets.ViewSet):
             except PushUser.DoesNotExist:
                 existing_user = None
             if existing_user is not None:
-                return obtain_auth_token(request)
+                return Response(create_user_response_data(existing_user))
             if email is not None and len(email) > 0:
                 existing_users = PushUser.objects.filter(email=email)
                 if len(existing_users) > 0:
@@ -46,10 +45,17 @@ class AccountViewSet(viewsets.ViewSet):
             user = PushUser.objects.create_user(email=email, username=username, password=password)
             user.save()
             token = Token.objects.create(user=user)
-            user_serializer = UserSerializer(user)
-            response_data = user_serializer.data
-            response_data['token'] = token.key
-            return Response(response_data)
+            return Response(create_user_response_data(user, token))
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
+def create_user_response_data(user, token=None):
+    user_serializer = UserSerializer(user)
+    response_data = user_serializer.data
+
+    if token is None:
+        token = Token.objects.get(user=user)
+
+    response_data['token'] = token.key
+    return response_data
