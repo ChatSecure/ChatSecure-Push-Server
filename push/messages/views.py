@@ -17,7 +17,7 @@ class MessagesViewSet(viewsets.ViewSet):
 
         if serializer.is_valid():
             token_string = serializer.data['token']
-            message_data = serializer.data['data']
+            message_data = serializer.data.get('data')
             try:
                 token = Token.objects.get(token=token_string)
             except Token.DoesNotExist:
