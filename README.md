@@ -115,7 +115,10 @@ In another new terminal window:
 
 #### Setup
 
-First install the [Heroku toolbelt](https://toolbelt.heroku.com/) on your development machine.
+First install the [Heroku toolbelt](https://toolbelt.heroku.com/) and [Foreman](https://devcenter.heroku.com/articles/procfile#developing-locally-with-foreman) on your development machine.
+
+    $ brew install heroku-toolbelt
+    $ gem install foreman
 
 To set up a new Heroku instance, invoke the following from the project root:
 
@@ -132,6 +135,12 @@ To modify the value of secret values (currently `GCM_API_KEY`, `APNS_CERTIFICATE
 Note that we store the APNS certificate contents in `APNS_CERTIFICATE` and use the `post_compile` hook to copy its value into a certificate file.
     
 To add commands that should be run before the `Procfile` is invoked, see `./bin/post_compile`. Currently we invoke `manage.py migrate`.
+
+#### Develop
+
+Use Foreman to locally run the application in the heroku environment.
+
+    $ foreman start
 
 #### Deploy
 
