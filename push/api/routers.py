@@ -28,7 +28,7 @@ class Router(DefaultRouter):
 
             + The Account create response will include an HTTP Authorization token required for the following requests.
 
-            #### 2. Create a [GCM](/api/devices/gcm/) or [APNS](/api/devices/apns) device.
+            #### 2. Create a [GCM](/api/device/gcm/) or [APNS](/api/device/apns) device.
             #### 3. Create a [Token](/api/tokens/) to allow others to send push messages to your device.
             #### 4. When you receive another's Token, send them a [Message](/api/messages)
             """
