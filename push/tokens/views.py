@@ -25,6 +25,7 @@ class TokenViewSet(viewsets.ModelViewSet):
 
     serializer_class = TokenSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, OwnerOnlyPermission)
+    lookup_field = "token"
 
     def get_queryset(self):
         """
