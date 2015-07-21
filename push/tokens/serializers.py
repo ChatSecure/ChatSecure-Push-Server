@@ -4,11 +4,12 @@ from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
 from push_notifications.models import APNSDevice, GCMDevice
+from api.serializers import NonNullSerializer
 from tokens.fields import RegistrationIdRelatedField
 from tokens.models import Token
 
 
-class TokenSerializer(serializers.ModelSerializer):
+class TokenSerializer(NonNullSerializer, serializers.ModelSerializer):
 
     apns_device = RegistrationIdRelatedField(allow_null=True, required=False, queryset=APNSDevice.objects.all())
     gcm_device = RegistrationIdRelatedField(allow_null=True, required=False, queryset=GCMDevice.objects.all())
