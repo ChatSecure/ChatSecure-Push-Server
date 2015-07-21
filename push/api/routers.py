@@ -24,13 +24,13 @@ class Router(DefaultRouter):
 
             # Flow
 
-            #### 1. Create an [Account](/api/accounts/).
+            #### 1. Create an [Account](/api/v1/accounts/).
 
             + The Account create response will include an HTTP Authorization token required for the following requests.
 
-            #### 2. Create a [GCM](/api/device/gcm/) or [APNS](/api/device/apns) device.
-            #### 3. Create a [Token](/api/tokens/) to allow others to send push messages to your device.
-            #### 4. When you receive another's Token, send them a [Message](/api/messages)
+            #### 2. Create a [GCM](/api/v1/device/gcm/) or [APNS](/api/v1/device/apns) device.
+            #### 3. Create a [Token](/api/v1/tokens/) to allow others to send push messages to your device.
+            #### 4. When you receive another's Token, send them a [Message](/api/v1/messages)
             """
             _ignore_model_permissions = True
 

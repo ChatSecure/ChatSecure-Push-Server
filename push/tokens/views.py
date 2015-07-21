@@ -19,7 +19,7 @@ class TokenViewSet(viewsets.ModelViewSet):
 
     After creating a token you'll typically share it with **one** sender who you wish to receive push messages from.
 
-    After receiving another's token, you'll typically send them a [Message](/api/messages/).
+    After receiving another's token, you'll typically send them a [Message](/api/v1/messages/).
 
     """
 

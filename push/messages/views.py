@@ -9,9 +9,16 @@ from push_notifications.models import APNSDevice, GCMDevice
 
 class MessagesViewSet(viewsets.ViewSet):
     """
-    Messages represent a push message directed at devices belonging to a single [Account](/api/accounts/).
+    Messages represent a push message directed at devices belonging to a single [Account](/api/v1/accounts/).
 
-    The `data` parameter must be JSON-compatible.
+    The `data` parameter must be JSON-compatible, as it is delivered to the client in a JSON dictionary:
+
+        { ... APNS / GCM Payload
+            'message' : {
+                'token' : '<token>',
+                'data' : '<data>'
+            }
+        }
 
     """
 

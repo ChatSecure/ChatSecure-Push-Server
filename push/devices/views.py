@@ -14,7 +14,7 @@ class _APNSDeviceAuthorizedViewSet(APNSDeviceAuthorizedViewSet):
 
     ## Next Steps
 
-    After creating a device you'll typically want to create a [Token](/api/tokens) to allow others to send it push messages.
+    After creating a device you'll typically want to create a [Token](/api/v1/tokens) to allow others to send it push messages.
 
     """
 
@@ -35,7 +35,7 @@ class _GCMDeviceAuthorizedViewSet(GCMDeviceAuthorizedViewSet):
 
     ## Next Steps
 
-    After creating a device you'll typically want to create a [Token](/api/tokens) to allow others to send it push messages.
+    After creating a device you'll typically want to create a [Token](/api/v1/tokens) to allow others to send it push messages.
 
     """
 

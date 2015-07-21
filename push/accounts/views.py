@@ -21,7 +21,7 @@ class AccountViewSet(viewsets.ViewSet):
 
     ## Next Steps
 
-    After creating an account you'll typically want to create a [GCM](/api/device/gcm/) or [APNS](/api/device/apns/) device.
+    After creating an account you'll typically want to create a [GCM](/api/v1/device/gcm/) or [APNS](/api/v1/device/apns/) device.
 
     """
 
