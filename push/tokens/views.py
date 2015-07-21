@@ -9,9 +9,20 @@ from api.permissions import OwnerOnlyPermission
 
 class TokenViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
+    Tokens represent revokable authorization to send push messages to ** all of the owner's devices**. It's reccommended
+    an owner request a new token for each sender, so that he/she may revoke push access per-sender.
+
+    A token is created with reference to **one** of its owner's devices, but it grants the bearer authorization to push
+    to that device or **all of the owner's devices**.
+
+    ## Next Steps
+
+    After creating a token you'll typically share it with **one** sender who you wish to receive push messages from.
+
+    After receiving another's token, you'll typically send them a [Message](/api/messages/).
+
     """
+
     serializer_class = TokenSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, OwnerOnlyPermission)
 

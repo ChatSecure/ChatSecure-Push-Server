@@ -8,6 +8,22 @@ from rest_framework.authtoken.models import Token
 
 
 class AccountViewSet(viewsets.ViewSet):
+    """
+    Accounts represent a single human user of ChatSecure-Push.
+
+    ## Authentication and Authorization
+    The Account creation response includes a `token` parameter for use within an HTTP Authorization header.
+
+        Authorization : Token <token>
+
+    To retrieve a `token` for an existing account, POST to this endpoint with credentials matching
+    an existing account.
+
+    ## Next Steps
+
+    After creating an account you'll typically want to create a [GCM](/api/device/gcm/) or [APNS](/api/device/apns/) device.
+
+    """
 
     permission_classes = (permissions.AllowAny,)
     serializer_class = CreateUserSerializer

@@ -8,6 +8,12 @@ from push_notifications.models import APNSDevice, GCMDevice
 
 
 class MessagesViewSet(viewsets.ViewSet):
+    """
+    Messages represent a push message directed at devices belonging to a single [Account](/api/accounts/).
+
+    The `data` parameter must be JSON-compatible.
+
+    """
 
     permission_classes = (permissions.AllowAny,)
     serializer_class = MessageSerializer
