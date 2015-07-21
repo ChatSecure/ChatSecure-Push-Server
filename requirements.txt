@@ -18,6 +18,7 @@ idna==2.0
 ipaddress==1.0.12
 kombu==3.0.26
 librabbitmq==1.6.1
+Markdown==2.6.2
 oauthlib==0.7.2
 psycopg2==2.6.1
 pyOpenSSL==0.15.1
