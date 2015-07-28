@@ -60,8 +60,8 @@ class AccountViewSet(viewsets.ViewSet):
                                     status=status.HTTP_400_BAD_REQUEST)
             user = PushUser.objects.create_user(email=email, username=username, password=password)
             user.save()
-            token = Token.objects.create(user=user)
-            return Response(create_user_response_data(user, token))
+            # A token is created on user.save()
+            return Response(create_user_response_data(user))
         else:
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)

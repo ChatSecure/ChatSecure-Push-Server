@@ -2,10 +2,10 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
+from devices.models import APNSDevice, GCMDevice
+from messages.messenger import send_apns, send_gcm
 from messages.serializers import MessageSerializer
 from tokens.models import Token
-from push_notifications.models import APNSDevice, GCMDevice
-
 
 class MessagesViewSet(viewsets.ViewSet):
     """
@@ -73,15 +73,21 @@ def send_message(token=None, data=None, broadcast=True):
 
     recipient = token.owner
     if broadcast is True:
-        apns_devices = APNSDevice.objects.filter(user__pk=recipient.pk)
-        gcm_devices = GCMDevice.objects.filter(user__pk=recipient.pk)
-        apns_devices.send_message(message=None, extra=message, content_available=True)
-        gcm_devices.send_message(message)
+        apns_devices = APNSDevice.objects.filter(owner__pk=recipient.pk)
+        gcm_devices = GCMDevice.objects.filter(owner__pk=recipient.pk)
+
+        if apns_devices.count() > 0:
+            apns_registration_ids = [device.registration_id for device in apns_devices]
+            send_apns(registration_ids=apns_registration_ids, message=message, content_available=True)
+
+        if gcm_devices.count() > 0:
+            gcm_registration_ids = [device.registration_id for device in gcm_devices]
+            send_gcm(registration_ids=gcm_registration_ids, message=message)
     else:
         apns_device = token.apns_device
         gcm_device = token.gcm_device
 
         if apns_device:
-            apns_device.send_message(message=None, extra=message, content_available=True)
+            send_apns(registration_ids=apns_device.registration_id, message=message, content_available=True)
         elif gcm_device:
-            gcm_device.send_message(message)
+            send_gcm(registration_ids=gcm_device.registration_id, message=message)

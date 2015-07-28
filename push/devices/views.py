@@ -1,24 +1,18 @@
-from push_notifications.api.rest_framework import APNSDeviceAuthorizedViewSet, GCMDeviceAuthorizedViewSet
+from rest_framework.viewsets import ModelViewSet
+from api.permissions import OwnerOnlyPermission
+from devices.models import APNSDevice, GCMDevice
+from devices.serializers import APNSDeviceSerializer, GCMDeviceSerializer
 
-class _APNSDeviceAuthorizedViewSet(APNSDeviceAuthorizedViewSet):
-    """
-    An [APNS](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html) compatible device.
 
-    ## Registration ID (Required)
+class DeviceViewSetMixin(object):
+    lookup_field = "id"
 
-    The APNS Device Token, presented as a 64 character string.
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated():
+            serializer.save(owner=self.request.user)
 
-    ## Device ID (Optional)
 
-    Currently unused. Any unique identifier you'd like to use to identify this device.
-
-    ## Next Steps
-
-    After creating a device you'll typically want to create a [Token](/api/v1/tokens) to allow others to send it push messages.
-
-    """
-
-class _GCMDeviceAuthorizedViewSet(GCMDeviceAuthorizedViewSet):
+class APNSDeviceAuthorizedViewSet(OwnerOnlyPermission, DeviceViewSetMixin, ModelViewSet):
     """
     A [GCM](https://developers.google.com/cloud-messaging/server-ref#downstream) compatible device.
 
@@ -39,3 +33,33 @@ class _GCMDeviceAuthorizedViewSet(GCMDeviceAuthorizedViewSet):
 
     """
 
+    queryset = APNSDevice.objects.all()
+    serializer_class = APNSDeviceSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user)
+
+
+class GCMDeviceAuthorizedViewSet(OwnerOnlyPermission, DeviceViewSetMixin, ModelViewSet):
+    """
+    An [APNS](https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html) compatible device.
+
+    ## Registration ID (Required)
+
+    The APNS Device Token, presented as a 64 character string.
+
+    ## Device ID (Optional)
+
+    Currently unused. Any unique identifier you'd like to use to identify this device.
+
+    ## Next Steps
+
+    After creating a device you'll typically want to create a [Token](/api/v1/tokens) to allow others to send it push messages.
+
+    """
+
+    queryset = GCMDevice.objects.all()
+    serializer_class = GCMDeviceSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(owner=self.request.user)

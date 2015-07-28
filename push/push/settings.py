@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     'accounts',
     'api',
     'tokens',
+    'devices'
 )
 
 REST_FRAMEWORK = {

@@ -11,5 +11,5 @@ class CreateUserSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PushUser
-        fields = ('username', 'email')
+        fields = ('username', 'email', 'id')
         read_only_fields = ('username',)

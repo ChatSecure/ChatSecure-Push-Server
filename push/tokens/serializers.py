@@ -3,16 +3,16 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
-from push_notifications.models import APNSDevice, GCMDevice
+from rest_framework.relations import PrimaryKeyRelatedField
 from api.serializers import NonNullSerializer
-from tokens.fields import RegistrationIdRelatedField
+from devices.models import APNSDevice, GCMDevice
 from tokens.models import Token
 
 
 class TokenSerializer(NonNullSerializer, serializers.ModelSerializer):
 
-    apns_device = RegistrationIdRelatedField(allow_null=True, required=False, queryset=APNSDevice.objects.all())
-    gcm_device = RegistrationIdRelatedField(allow_null=True, required=False, queryset=GCMDevice.objects.all())
+    apns_device = PrimaryKeyRelatedField(allow_null=True, required=False, queryset=APNSDevice.objects.all())
+    gcm_device = PrimaryKeyRelatedField(allow_null=True, required=False, queryset=GCMDevice.objects.all())
 
     class Meta:
         model = Token
@@ -26,10 +26,10 @@ class TokenSerializer(NonNullSerializer, serializers.ModelSerializer):
         if request is not None and request.user is not None and not isinstance(request.user, AnonymousUser):
             # Restrict the queryset of APNS and GCM devices to those owned by the request's user
             apns_device = self.fields.get('apns_device')
-            apns_device.queryset = apns_device.queryset.filter(user=request.user)
+            apns_device.queryset = apns_device.queryset.filter(owner=request.user)
 
             gcm_device = self.fields.get('gcm_device')
-            gcm_device.queryset = gcm_device.queryset.filter(user=request.user)
+            gcm_device.queryset = gcm_device.queryset.filter(owner=request.user)
 
         else:
             raise PermissionDenied

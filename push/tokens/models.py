@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
-from push_notifications.models import APNSDevice, GCMDevice
+from devices.models import APNSDevice, GCMDevice
+
 
 class Token(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)

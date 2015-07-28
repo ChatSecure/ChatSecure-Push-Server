@@ -3,7 +3,7 @@ from collections import OrderedDict
 from rest_framework.fields import SkipField
 
 
-class NonNullSerializer():
+class NonNullSerializer:
     """
     Serializer mixin that removes None fields when converted to its externally-viewable representation
     Based off http://stackoverflow.com/a/28870066
