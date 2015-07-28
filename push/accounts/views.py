@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
@@ -52,7 +53,14 @@ class AccountViewSet(viewsets.ViewSet):
             except PushUser.DoesNotExist:
                 existing_user = None
             if existing_user is not None:
-                return Response(create_user_response_data(existing_user))
+                # The 'Login' request
+                auth_user = authenticate(username=username, password=password)
+                if auth_user is not None:
+                    return Response(create_user_response_data(existing_user))
+                else:
+                    return Response({'error': 'Invalid credentials'},
+                                    status=status.HTTP_401_UNAUTHORIZED)
+
             if email is not None and len(email) > 0:
                 existing_users = PushUser.objects.filter(email=email)
                 if len(existing_users) > 0:
