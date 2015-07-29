@@ -5,4 +5,5 @@ mkdir -p private_keys
 echo "$APNS_CERTIFICATE" > ./private_keys/apns_cert.pem
 
 # Run Django migrations.
+python ./push/manage.py migrate accounts
 python ./push/manage.py migrate
