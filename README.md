@@ -157,12 +157,22 @@ If you need to deploy a non-master local branch:
 To run a command on the Heroku instance:
 
     $ heroku run python push/manage.py some_command
-    
+
 API Documentation
 -------------
 
 Check out `docs/v3/README.md` for now. The API is constantly in flux right now.
-    
+
+Tests
+-------------
+Run tests from the termainal:
+
+    $ python push/manage.py test push
+
+Or directly within PyCharm:
+
+    Edit Configurations -> + Add new -> Django tests
+
 
 License
 ---------
