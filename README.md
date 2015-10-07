@@ -14,6 +14,16 @@ RabbitMQ is available via Homebrew.
 
 Postgres is available on Mac with [Postgres.app](http://postgresapp.com) but more readily upgradeable when installed via Homebrew with `brew install postgres`. On Linux, install the latest version of Postgres with the package manager of your choice.
 
+After installing Postgres, add its `bin/` directory to your system path in prepararation for `psycopg2`, the python PostgreSQL adapter.
+
+```bash
+# ~/.bash_profile
+# ...
+# Postgres (Your path will differ if you aren't using Postgress.app)
+PATH=${PATH}:/Applications/Postgres.app/Contents/Versions/9.4/bin/
+
+```
+
 If you don't have the latest version of Python 2.7 and pip, get them.
 
     $ brew install python (Mac. On Linux, use the package manager of your choice)
