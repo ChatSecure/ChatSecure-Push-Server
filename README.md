@@ -41,7 +41,6 @@ Then you will need to install the following dependencies:
 
 	(push)$ cd /path/to/ChatSecure-Push-Server/
 	(push)$ pip install -r requirements.txt
-	
     
 Setup
 ---------
@@ -99,9 +98,14 @@ Copy `local_settings_template.py` to `local_settings.py`. Fill in the following 
  * `APNS_CERTIFICATE`: Path to your `Certificate.pem` file.
  * `GCM_API_KEY` : Your Google Cloud Messaging `Server Api Key`
 
-### Sync Database
+### Database
 
-You need to sync your database before you can do anything.
+First create a PostgrSQL database matching that you specified in your `./push/push/local_settings.py`.
+
+    # From psql console:
+    $ create database NAME;
+    
+Next you need to sync your database before you can do anything.
 
     (push)$ python manage.py migrate
     
