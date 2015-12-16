@@ -11,6 +11,12 @@ class DeviceViewSetMixin(object):
         if self.request.user.is_authenticated():
             serializer.save(owner=self.request.user)
 
+    def get_queryset(self):
+        user = self.request.user
+        if not user.is_authenticated():
+            return []
+        return self.queryset.filter(owner=user)
+
 
 class APNSDeviceAuthorizedViewSet(OwnerOnlyPermission, DeviceViewSetMixin, ModelViewSet):
     """
@@ -32,9 +38,6 @@ class APNSDeviceAuthorizedViewSet(OwnerOnlyPermission, DeviceViewSetMixin, Model
 
     queryset = APNSDevice.objects.all()
     serializer_class = APNSDeviceSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(owner=self.request.user)
 
 
 class GCMDeviceAuthorizedViewSet(OwnerOnlyPermission, DeviceViewSetMixin, ModelViewSet):
@@ -60,6 +63,3 @@ class GCMDeviceAuthorizedViewSet(OwnerOnlyPermission, DeviceViewSetMixin, ModelV
 
     queryset = GCMDevice.objects.all()
     serializer_class = GCMDeviceSerializer
-
-    def get_queryset(self):
-        return self.queryset.filter(owner=self.request.user)
