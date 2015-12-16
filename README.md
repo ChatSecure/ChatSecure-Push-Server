@@ -31,7 +31,13 @@ Then you will need to install the following dependencies:
 
 	(push)$ cd /path/to/ChatSecure-Push-Server/
 	(push)$ pip install -r requirements.txt
-	
+
+### Database
+
+Create a PostgrSQL database matching that you specified in your `./push/push/local_settings.py`.
+
+    # From psql console:
+    $ create database NAME;
     
 Setup
 ---------
@@ -94,6 +100,11 @@ Copy `local_settings_template.py` to `local_settings.py`. Fill in the following 
 You need to sync your database before you can do anything.
 
     (push)$ python manage.py migrate
+
+Next add a superuser account for yourself. The below command will start a wizard to guide you.
+
+    (push)$ python manage.py createsuperuser
+
     
 ### Running (Development)  
 
@@ -115,10 +126,9 @@ In another new terminal window:
 
 #### Setup
 
-First install the [Heroku toolbelt](https://toolbelt.heroku.com/) and [Foreman](https://devcenter.heroku.com/articles/procfile#developing-locally-with-foreman) on your development machine.
+First install the [Heroku toolbelt](https://toolbelt.heroku.com/) on your development machine.
 
     $ brew install heroku-toolbelt
-    $ gem install foreman
 
 To set up a new Heroku instance, invoke the following from the project root:
 
@@ -130,7 +140,7 @@ To connect to an existing Heroku instance, invoke the following from the project
     
 To modify the value of secret values (currently `GCM_API_KEY`, `APNS_CERTIFICATE`, `DJANGO_SECRET_KEY`, `DATABASE_URL`):
 
-    $ heroku config:set NAME=VALUE
+    $ heroku config:set NAME=VALUE  # This also restarts your app
 
 Note that we store the APNS certificate contents in `APNS_CERTIFICATE` and use the `post_compile` hook to copy its value into a certificate file.
     
@@ -138,11 +148,17 @@ To add commands that should be run before the `Procfile` is invoked, see `./bin/
 
 #### Develop
 
-Use Foreman to locally run the application in the heroku environment.
+Use Heroku Local to locally run the application in the heroku environment.
 
-    $ foreman start
+    $ heroku local
 
 #### Deploy
+
+After creating your Heroku application, add a `Heroku Postgres` addon. To add the free trial database:
+
+    $  heroku addons:create heroku-postgresql:hobby-dev
+
+See other [Heroku Postgres plans](https://devcenter.heroku.com/articles/heroku-postgres-plans).
 
 Push to the Heroku remote's master branch to deploy.
 
