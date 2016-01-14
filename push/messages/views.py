@@ -26,7 +26,7 @@ class MessagesViewSet(viewsets.ViewSet):
     serializer_class = MessageSerializer
 
     def create(self, request):
-        serializer = MessageSerializer(data=request.DATA)
+        serializer = MessageSerializer(data=request.data)
 
         if serializer.is_valid():
             token_string = serializer.data['token']

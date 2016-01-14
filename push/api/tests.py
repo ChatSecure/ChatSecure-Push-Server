@@ -29,13 +29,13 @@ class ApiIntegrationTests(APITestCase):
                                            auth_token=bob_auth_token, apns=False)
 
         bob_devices_resp = self.get_devices(auth_token=bob_auth_token, apns=False)
-        self.assertTrue(bob_devices_resp.data['count'] == 1, 'Bob device list is correct length')
-        self.assertTrue(bob_devices_resp.data['results'][0]['registration_id'] == bob_device_registration_id,
+        self.assertTrue(len(bob_devices_resp.data) == 1, 'Bob device list is correct length')
+        self.assertTrue(bob_devices_resp.data[0]['registration_id'] == bob_device_registration_id,
                         'Returned Bob device has expected registration id')
 
         bob_tokens_resp = self.get_tokens(bob_auth_token)
-        self.assertTrue(bob_tokens_resp.data['count'] == 1, 'Bob token list is correct length')
-        self.assertTrue(bob_tokens_resp.data['results'][0]['token'] == bob_token_resp.data['token'],
+        self.assertTrue(len(bob_tokens_resp.data) == 1, 'Bob token list is correct length')
+        self.assertTrue(bob_tokens_resp.data[0]['token'] == bob_token_resp.data['token'],
                         'Returned Bob token has expected token value')
 
     def create_account(self, username, password):

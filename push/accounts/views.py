@@ -43,7 +43,7 @@ class AccountViewSet(viewsets.ViewSet):
         return self.retrieve(request, request.user.pk)
 
     def create(self, request):
-        serializer = CreateUserSerializer(data=request.DATA)
+        serializer = CreateUserSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.data.get('email', None)
             username = serializer.data['username']

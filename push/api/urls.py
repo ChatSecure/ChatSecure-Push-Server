@@ -14,7 +14,7 @@ router.register(prefix=r'tokens', viewset=TokenViewSet, base_name='token')
 router.register(prefix=r'messages', viewset=MessagesViewSet, base_name='message')
 router.register(prefix=r'accounts', viewset=AccountViewSet, base_name='account')
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^v1/', include(router.urls, namespace='v1')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-)
+]
