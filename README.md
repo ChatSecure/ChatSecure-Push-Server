@@ -75,19 +75,13 @@ Each iOS client application requires separate APNS SSL Certificates for developm
 4. Convert `DevKey.p12` private key to `DevKey.pem`
 
     ```
-    $ openssl pkcs12 -nocerts -in DevKey.p12 -out DevKey.pem 
-    ```
-    
-5. Remove password on `DevKey.pem` private key, producing `DevKey.NoPassword.pem`:
-
-    ```
-    $ openssl rsa -in DevKey.pem -out DevKey.NoPassword.pem
+    $ openssl pkcs12 -nocerts -in DevKey.p12 -out DevKey.pem -nodes
     ```
 
-6. Combine the no-password private key `DevKey.NoPassword.pem` with the Apple-issued and signed cert `DevCert.pem` into the cert file `Certificate.pem`:
+5. Combine the no-password private key `DevKey.pem` with the Apple-issued and signed cert `DevCert.pem` into the cert file `Certificate.pem`:
 
     ```
-    $ cat DevCert.pem DevKey.NoPassword.pem > Certificate.pem
+    $ cat DevCert.pem DevKey.pem > Certificate.pem
     ```
 	
     
