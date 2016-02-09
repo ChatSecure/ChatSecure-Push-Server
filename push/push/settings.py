@@ -125,7 +125,7 @@ INSTALLED_APPS = (
     'api',
     'tokens',
     'devices',
-    'messages.apps.PushMessagesConfig'
+    'messages.apps.PushMessagesConfig' # To avoid label conflict with 'django.contrib.messages'
 )
 
 REST_FRAMEWORK = {
