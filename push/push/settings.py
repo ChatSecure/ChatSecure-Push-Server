@@ -124,7 +124,8 @@ INSTALLED_APPS = (
     'accounts',
     'api',
     'tokens',
-    'devices'
+    'devices',
+    'messages.apps.PushMessagesConfig'
 )
 
 REST_FRAMEWORK = {
@@ -197,6 +198,10 @@ PUSH_NOTIFICATIONS_SETTINGS = {
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Heroku CloudAMQP. Free 'Little Lemur' Plan seems to offer 20 connections
+BROKER_POOL_LIMIT = 20
+BROKER_URL = os.environ.get('CLOUDAMQP_URL', '')
 
 try:
     from push.local_settings import *

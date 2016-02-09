@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from devices.models import APNSDevice, GCMDevice
-from messages.messenger import send_apns, send_gcm
+from messages.tasks import send_apns, send_gcm
 from messages.serializers import MessageSerializer
 from tokens.models import Token
 
