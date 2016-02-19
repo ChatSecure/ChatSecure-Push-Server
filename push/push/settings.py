@@ -140,7 +140,8 @@ REST_FRAMEWORK = {
 
 CHATSECURE_PUSH = {
     # Set this to false when debugging to not use Celery
-    'USE_MESSAGE_QUEUE': True
+    'USE_MESSAGE_QUEUE': True,
+    'DEFAULT_TOKEN_EXPIRY_TIME_S': 60 * 60 * 24 * 60  # 60 days
 }
 
 LOGGING = {

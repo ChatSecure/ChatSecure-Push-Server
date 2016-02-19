@@ -28,7 +28,8 @@ BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 
 CHATSECURE_PUSH = {
     # Set this to false when debugging to not use Celery
-    'USE_MESSAGE_QUEUE': False
+    'USE_MESSAGE_QUEUE': False,
+    'DEFAULT_TOKEN_EXPIRY_TIME_S': 60 * 60 * 24 * 60  # 60 days
 }
 
 PUSH_NOTIFICATIONS_SETTINGS = {
