@@ -203,6 +203,9 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 BROKER_POOL_LIMIT = 20
 BROKER_URL = os.environ.get('CLOUDAMQP_URL', '')
 
+# Celery
+CELERY_IMPORTS = ('messages.messenger',)
+
 try:
     from push.local_settings import *
 except:

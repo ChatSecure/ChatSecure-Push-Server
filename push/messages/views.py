@@ -3,9 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
 from devices.models import APNSDevice, GCMDevice
-from messages.tasks import task_send_apns, task_send_gcm
+from messages.messenger import send_gcm, send_apns
 from messages.serializers import MessageSerializer
 from tokens.models import Token
+
 
 class MessagesViewSet(viewsets.ViewSet):
     """
@@ -78,16 +79,16 @@ def send_message(token=None, data=None, broadcast=True):
 
         if apns_devices.count() > 0:
             apns_registration_ids = [device.registration_id for device in apns_devices]
-            task_send_apns(registration_ids=apns_registration_ids, message=message, content_available=True)
+            send_apns(registration_ids=apns_registration_ids, message=message, content_available=True)
 
         if gcm_devices.count() > 0:
             gcm_registration_ids = [device.registration_id for device in gcm_devices]
-            task_send_gcm(registration_ids=gcm_registration_ids, message=message)
+            send_gcm(registration_ids=gcm_registration_ids, message=message)
     else:
         apns_device = token.apns_device
         gcm_device = token.gcm_device
 
         if apns_device:
-            task_send_apns(registration_ids=apns_device.registration_id, message=message, content_available=True)
+            send_apns(registration_ids=apns_device.registration_id, message=message, content_available=True)
         elif gcm_device:
-            task_send_gcm(registration_ids=gcm_device.registration_id, message=message)
+            send_gcm(registration_ids=gcm_device.registration_id, message=message)

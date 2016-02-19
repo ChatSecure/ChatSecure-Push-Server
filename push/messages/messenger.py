@@ -1,9 +1,28 @@
 import collections
 from push_notifications.apns import apns_send_bulk_message, apns_send_message
 from push_notifications.gcm import gcm_send_bulk_message, gcm_send_message
+from push.celery import app
+from django.conf import settings
+
+
+USE_MESSAGE_QUEUE = settings.CHATSECURE_PUSH['USE_MESSAGE_QUEUE']
 
 
 def send_apns(registration_ids, message, **kwargs):
+    if USE_MESSAGE_QUEUE:
+        _task_send_apns(registration_ids, message, **kwargs)
+    else:
+        _send_apns(registration_ids, message, **kwargs)
+
+
+def send_gcm(registration_ids, message, **kwargs):
+    if USE_MESSAGE_QUEUE:
+        _task_send_gcm(registration_ids, message, **kwargs)
+    else:
+        _send_gcm(registration_ids, message, **kwargs)
+
+
+def _send_apns(registration_ids, message, **kwargs):
     '''
     Send a message to one or more APNS recipients
 
@@ -18,7 +37,7 @@ def send_apns(registration_ids, message, **kwargs):
         apns_send_message(registration_ids, message, **kwargs)
 
 
-def send_gcm(registration_ids, message, **kwargs):
+def _send_gcm(registration_ids, message, **kwargs):
     '''
     Send a message to one or more GCM recipients
 
@@ -37,3 +56,13 @@ def send_gcm(registration_ids, message, **kwargs):
         gcm_send_bulk_message(registration_ids, data, **kwargs)
     else:
         gcm_send_message(registration_ids, data, **kwargs)
+
+
+@app.task(ignore_result=True)
+def _task_send_apns(registration_ids, message, **kwargs):
+    return _send_apns(registration_ids, message, **kwargs)
+
+
+@app.task(ignore_result=True)
+def _task_send_gcm(registration_ids, message, **kwargs):
+    return _send_gcm(registration_ids, message, **kwargs)
