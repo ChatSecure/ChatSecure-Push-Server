@@ -14,14 +14,14 @@ logger = logging.getLogger("django")
 
 def send_apns(registration_ids, message, **kwargs):
     if USE_MESSAGE_QUEUE:
-        _task_send_apns(registration_ids, message, **kwargs)
+        _task_send_apns.delay(registration_ids, message, **kwargs)
     else:
         _send_apns(registration_ids, message, **kwargs)
 
 
 def send_gcm(registration_ids, message, **kwargs):
     if USE_MESSAGE_QUEUE:
-        _task_send_gcm(registration_ids, message, **kwargs)
+        _task_send_gcm.delay(registration_ids, message, **kwargs)
     else:
         _send_gcm(registration_ids, message, **kwargs)
 
