@@ -199,10 +199,12 @@ APNS_FEEDBACK_HOST_DEV = "feedback.sandbox.push.apple.com"
 APNS_HOST_PROD = "gateway.push.apple.com"
 APNS_FEEDBACK_HOST_PROD = "feedback.push.apple.com"
 
+APNS_USE_SANDBOX = os.environ.get("APNS_USE_SANDBOX", True)
+
 PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_CERTIFICATE' : APNS_CERT,
-    'APNS_HOST' : os.environ.get('APNS_HOST', APNS_HOST_DEV),
-    'APNS_FEEDBACK_HOST' : os.environ.get('APNS_FEEDBACK_HOST', APNS_FEEDBACK_HOST_DEV),
+    'APNS_HOST' : APNS_HOST_DEV if APNS_USE_SANDBOX else APNS_HOST_PROD,
+    'APNS_FEEDBACK_HOST' : APNS_FEEDBACK_HOST_DEV if APNS_USE_SANDBOX else APNS_FEEDBACK_HOST_PROD,
 
     'GCM_API_KEY' : os.environ.get('GCM_API_KEY', ''),
 }
