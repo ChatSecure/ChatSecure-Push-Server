@@ -192,9 +192,19 @@ DATABASES['default'] = dj_database_url.config()
 
 # The APNS cert should be located at /ProjectRoot/private_keys/apns_cert.pem (../../../private_keys/apns_cert.pem)
 APNS_CERT = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'private_keys/apns_cert.pem' )
+
+# For reference, these are APNS Host and Feedback Host addresses
+APNS_HOST_DEV = "gateway.sandbox.push.apple.com"
+APNS_FEEDBACK_HOST_DEV = "feedback.sandbox.push.apple.com"
+APNS_HOST_PROD = "gateway.push.apple.com"
+APNS_FEEDBACK_HOST_PROD = "feedback.push.apple.com"
+
 PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_CERTIFICATE' : APNS_CERT,
-    'GCM_API_KEY' : os.environ.get('GCM_API_KEY', '')
+    'APNS_HOST' : os.environ.get('APNS_HOST', APNS_HOST_DEV),
+    'APNS_FEEDBACK_HOST' : os.environ.get('APNS_FEEDBACK_HOST', APNS_FEEDBACK_HOST_DEV),
+
+    'GCM_API_KEY' : os.environ.get('GCM_API_KEY', ''),
 }
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
