@@ -1,4 +1,6 @@
 import collections
+import logging
+
 from push_notifications.apns import apns_send_bulk_message, apns_send_message
 from push_notifications.gcm import gcm_send_bulk_message, gcm_send_message
 from push.celery import app
@@ -6,6 +8,8 @@ from django.conf import settings
 
 
 USE_MESSAGE_QUEUE = settings.CHATSECURE_PUSH['USE_MESSAGE_QUEUE']
+
+logger = logging.getLogger("django")
 
 
 def send_apns(registration_ids, message, **kwargs):
@@ -31,10 +35,13 @@ def _send_apns(registration_ids, message, **kwargs):
     :param kwargs: additional APNS arguments. See push_notifications.apns._apns_sendd
     '''
 
-    if isinstance(registration_ids, collections.Iterable):
-        apns_send_bulk_message(registration_ids, message, **kwargs)
-    else:
-        apns_send_message(registration_ids, message, **kwargs)
+    try:
+        if isinstance(registration_ids, collections.Iterable):
+            apns_send_bulk_message(registration_ids, message, **kwargs)
+        else:
+            apns_send_message(registration_ids, message, **kwargs)
+    except Exception as exception:
+        logger.info("Exception sending APNS message: %s" % str(exception))
 
 
 def _send_gcm(registration_ids, message, **kwargs):
