@@ -8,7 +8,7 @@ class DeviceSerializerMixin(ModelSerializer):
 
     class Meta:
         # Omit owner because devices are only visible to their owners
-        fields = ("name", "id", "active", "registration_id", "device_id", "date_created")
+        fields = ("name", "id", "active", "registration_id", "device_id", "date_created", "xmpp_push_service")
         read_only_fields = ("date_created",)
 
 

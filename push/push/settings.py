@@ -139,9 +139,13 @@ REST_FRAMEWORK = {
 }
 
 CHATSECURE_PUSH = {
-    # Set this to false when debugging to not use Celery
+    # Whether to dispatch push messages on an asynchronous queue (currently Celery)
     'USE_MESSAGE_QUEUE': True,
-    'DEFAULT_TOKEN_EXPIRY_TIME_S': 60 * 60 * 24 * 60  # 60 days
+    # Push Whitelist Tokens older than this expiry time will be deleted
+    'DEFAULT_TOKEN_EXPIRY_TIME_S': 60 * 60 * 24 * 60,  # 60 days
+    # Address of the 'XMPP Push Service' which adapts XEP-0357 traffic to this app's HTTP API
+    # This value is issued to clients who in turn deliver it to their XMPP Server
+    'XMPP_PUSH_SERVICE': 'chatsecure-xmpp-push-service.herokuapp.com'
 }
 
 LOGGING = {

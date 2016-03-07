@@ -24,6 +24,8 @@ class Device(models.Model):
     registration_id = models.TextField(verbose_name=_("Registration ID"))
     device_id = models.TextField(verbose_name=_("Device ID"), blank=True, null=True)
 
+    xmpp_push_service = settings.CHATSECURE_PUSH['XMPP_PUSH_SERVICE']
+
     class Meta:
         abstract = True
 
