@@ -145,7 +145,7 @@ CHATSECURE_PUSH = {
     'DEFAULT_TOKEN_EXPIRY_TIME_S': 60 * 60 * 24 * 60,  # 60 days
     # Address of the 'XMPP Push Service' which adapts XEP-0357 traffic to this app's HTTP API
     # This value is issued to clients who in turn deliver it to their XMPP Server
-    'XMPP_PUSH_SERVICE': 'chatsecure-xmpp-push-service.herokuapp.com'
+    'XMPP_PUSH_SERVICE': os.environ.get("XMPP_PUSH_SERVICE", '')
 }
 
 LOGGING = {
