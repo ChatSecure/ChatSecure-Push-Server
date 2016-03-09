@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from api.routers import Router
+from api.views import PubSubNodeViewSet
 from tokens.views import TokenViewSet
 from messages.views import MessagesViewSet
 from accounts.views import AccountViewSet
@@ -13,6 +14,7 @@ router.register(prefix=r'device/gcm', viewset=GCMDeviceAuthorizedViewSet)
 router.register(prefix=r'tokens', viewset=TokenViewSet, base_name='token')
 router.register(prefix=r'messages', viewset=MessagesViewSet, base_name='message')
 router.register(prefix=r'accounts', viewset=AccountViewSet, base_name='account')
+router.register(prefix=r'pubsub', viewset=PubSubNodeViewSet, base_name='pubsub')
 
 urlpatterns = [
     url(r'^v1/', include(router.urls, namespace='v1')),
