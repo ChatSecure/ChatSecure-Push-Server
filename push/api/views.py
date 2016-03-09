@@ -20,7 +20,6 @@ class PubSubNodeViewSet(GenericViewSet):
     client would provide the `jid` returned from this API alongside a `push_whitelist_token` obtained from the
     [Token](/api/v1/tokens) API, to your XMPP server as follows:
 
-    ```xml
         <iq type="set" id="enable1">
             <enable xmlns="urn:xmpp:push:0" jid="jid">
                 <x xmlns="jabber:x:data">
@@ -29,7 +28,6 @@ class PubSubNodeViewSet(GenericViewSet):
                 </x>
             </enable>
         </iq>
-    ```
 
     """
 
