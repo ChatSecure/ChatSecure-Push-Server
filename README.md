@@ -3,8 +3,17 @@ ChatSecure Push Server
 
 An experimental design for a privacy-minded push server.
 
-Installation
-------------
+Deploy to Heroku
+----------------
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+After deployment is complete, use the [Heroku Scheduler](https://scheduler.heroku.com/dashboard) to schedule daily expired token cleanup via the `python push/manage.py delete_expired_tokens` command:
+
+![Heroku Scheduler Clean Expired Tokens Task](https://github.com/ChatSecure/ChatSecure-Push-Server/raw/master/art/heroku_scheduler_command.png)
+
+Manual Installation
+-------------------
 
 You will need to install RabbitMQ, Postgres, and pip using the method of your choosing:
 
