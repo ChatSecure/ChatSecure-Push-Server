@@ -30,7 +30,7 @@
         "XMPP_PUSH_SERVICE": {
           "description": "The address of the XMPP Push Service or PubSub Node (as defined in XEP-0357) that will act as this application's gateway to the XMPP ecosystem.",
           "value": ""
-        },
+        }
     },
     "addons": [
         "cloudamqp",
