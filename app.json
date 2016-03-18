@@ -1,0 +1,41 @@
+{
+    "name": "ChatSecure Push",
+    "description": "An experimental privacy-minded push server.",
+    "website": "https://github.com/ChatSecure/ChatSecure-Push-Server",
+    "repository": "https://github.com/jane/example",
+    "logo": "https://chatsecure.org/images/logo.png",
+    "success_url": "/api/v1/",
+    "keywords": [
+        "push messaging",
+        "privacy",
+        "ChatSecure"
+    ],
+    "env": {
+        "DJANGO_SECRET_KEY": {
+          "description": "Django's secret key for cryptographic signing",
+          "generator": "secret"
+        },
+        "APNS_CERTIFICATE": {
+            "description": "The contents of your APNS SSL certificate in .pem format. Make sure the certificate used (sandbox or prouction) is appropriate for the value of `APNS_USE_SANDBOX`.",
+            "value": ""
+        },
+        "APNS_USE_SANDBOX": {
+          "description": "Whether to use the APNS Sandbox (True) or Production (False) endpoints",
+          "value": "True"
+        },
+        "GCM_API_KEY": {
+          "description": "Your Google Cloud Messaging API Key",
+          "value": ""
+        },
+        "XMPP_PUSH_SERVICE": {
+          "description": "The address of the XMPP Push Service or PubSub Node (as defined in XEP-0357) that will act as this application's gateway to the XMPP ecosystem.",
+          "value": ""
+        },
+    },
+    "addons": [
+        "cloudamqp",
+        "heroku-postgresql",
+        "scheduler"
+    ],
+    "generator": "https://www.expeditedssl.com/heroku-button-maker"
+}
