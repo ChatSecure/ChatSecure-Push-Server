@@ -203,7 +203,8 @@ APNS_FEEDBACK_HOST_DEV = "feedback.sandbox.push.apple.com"
 APNS_HOST_PROD = "gateway.push.apple.com"
 APNS_FEEDBACK_HOST_PROD = "feedback.push.apple.com"
 
-APNS_USE_SANDBOX = os.environ.get("APNS_USE_SANDBOX", True)
+APNS_USE_SANDBOX = os.environ.get("APNS_USE_SANDBOX", 'true').lower()
+APNS_USE_SANDBOX = True if APNS_USE_SANDBOX == 'true' else False
 
 PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_CERTIFICATE' : APNS_CERT,
