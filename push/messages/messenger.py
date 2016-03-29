@@ -41,7 +41,7 @@ def _send_apns(registration_ids, message, **kwargs):
         else:
             apns_send_message(registration_ids, message, **kwargs)
     except Exception as exception:
-        logger.info("Exception sending APNS message: %s" % str(exception))
+        logger.exception("Exception sending APNS message. %s : %s" % (exception.__class__.__name__, str(exception)))
 
 
 def _send_gcm(registration_ids, message, **kwargs):
