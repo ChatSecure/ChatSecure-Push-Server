@@ -1,3 +1,4 @@
+import datetime
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -18,3 +19,9 @@ class Token(models.Model):
         owner_name = self.owner.username
         token_type = "APNS" if self.apns_device is not None else "GCM"
         return "%s's %s token created %s" % (owner_name, token_type, self.date_created)
+
+    def get_expiry_date(self):
+        expiry_timedelta = datetime.timedelta(seconds=settings.CHATSECURE_PUSH['DEFAULT_TOKEN_EXPIRY_TIME_S'])
+        expiry_date = self.date_created + expiry_timedelta
+
+        return expiry_date

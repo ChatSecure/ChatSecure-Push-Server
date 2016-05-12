@@ -2,6 +2,7 @@ from django.contrib.auth.models import AnonymousUser
 
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.fields import ReadOnlyField
 
 from rest_framework.relations import PrimaryKeyRelatedField
 from api.serializers import NonNullSerializer
@@ -13,11 +14,12 @@ class TokenSerializer(NonNullSerializer, serializers.ModelSerializer):
 
     apns_device = PrimaryKeyRelatedField(allow_null=True, required=False, queryset=APNSDevice.objects.all())
     gcm_device = PrimaryKeyRelatedField(allow_null=True, required=False, queryset=GCMDevice.objects.all())
+    date_expires = ReadOnlyField(source="get_expiry_date")
 
     class Meta:
         model = Token
-        fields = ('name', 'token', 'apns_device', 'gcm_device')
-        read_only_fields = ('token',)
+        fields = ('name', 'token', 'apns_device', 'gcm_device', 'date_expires')
+        read_only_fields = ('token', 'date_expires')
 
     def __init__(self, *args, **kwargs):
         super(TokenSerializer, self).__init__(*args, **kwargs)
@@ -33,7 +35,6 @@ class TokenSerializer(NonNullSerializer, serializers.ModelSerializer):
 
         else:
             raise PermissionDenied
-
 
     def validate(self, data):
         """
