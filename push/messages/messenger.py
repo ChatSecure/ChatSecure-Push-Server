@@ -40,15 +40,17 @@ def _send_apns(registration_ids, message, **kwargs):
     :param kwargs: additional APNS arguments. See push_notifications.apns._apns_sendd
     '''
 
+    enqueue_date_str = kwargs.pop('enqueue_date', None)
+
     try:
         if isinstance(registration_ids, collections.Iterable):
             apns_send_bulk_message(registration_ids, message, **kwargs)
         else:
             apns_send_message(registration_ids, message, **kwargs)
-        log_message_sent(**kwargs)
+        log_message_sent(enqueue_date_str=enqueue_date_str)
     except Exception as exception:
         logger.exception("Exception sending APNS message. %s : %s" % (exception.__class__.__name__, str(exception)))
-        log_message_sent(exception=exception, **kwargs)
+        log_message_sent(exception=exception, enqueue_date_str=enqueue_date_str)
 
 
 def _send_gcm(registration_ids, message, **kwargs):
@@ -62,6 +64,7 @@ def _send_gcm(registration_ids, message, **kwargs):
     '''
 
     data = kwargs.pop("extra", {})
+    enqueue_date_str = kwargs.pop('enqueue_date', None)
 
     if message is not None:
         data["message"] = message
@@ -71,7 +74,7 @@ def _send_gcm(registration_ids, message, **kwargs):
     else:
         gcm_send_message(registration_ids, data, **kwargs)
 
-    log_message_sent(**kwargs)
+    log_message_sent(enqueue_date_str=enqueue_date_str)
 
 
 @app.task(ignore_result=True)
@@ -84,8 +87,7 @@ def _task_send_gcm(registration_ids, message, **kwargs):
     return _send_gcm(registration_ids, message, **kwargs)
 
 
-def log_message_sent(exception=None, **kwargs):
-    enqueue_date_str = kwargs['enqueue_date']
+def log_message_sent(exception=None, enqueue_date_str=None):
     extra_data = {}
 
     if enqueue_date_str is not None:
