@@ -12,20 +12,21 @@ from django.conf import settings
 
 
 USE_MESSAGE_QUEUE = settings.CHATSECURE_PUSH['USE_MESSAGE_QUEUE']
+DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f%z'  # Used to marshal enqueue date to celery
 
 logger = logging.getLogger("django")
 
 
 def send_apns(registration_ids, message, **kwargs):
     if USE_MESSAGE_QUEUE:
-        _task_send_apns.delay(registration_ids, message, **dict(kwargs, enqueue_date=datetime.datetime.now()))
+        _task_send_apns.delay(registration_ids, message, **dict(kwargs, enqueue_date=datetime.datetime.now().strftime(DATE_FORMAT)))
     else:
         _send_apns(registration_ids, message, **kwargs)
 
 
 def send_gcm(registration_ids, message, **kwargs):
     if USE_MESSAGE_QUEUE:
-        _task_send_gcm.delay(registration_ids, message, **dict(kwargs, enqueue_date=datetime.datetime.now()))
+        _task_send_gcm.delay(registration_ids, message, **dict(kwargs, enqueue_date=datetime.datetime.now().strftime(DATE_FORMAT)))
     else:
         _send_gcm(registration_ids, message, **kwargs)
 
@@ -84,11 +85,12 @@ def _task_send_gcm(registration_ids, message, **kwargs):
 
 
 def log_message_sent(exception=None, **kwargs):
-    enqueue_date = kwargs['enqueue_date']
+    enqueue_date_str = kwargs['enqueue_date']
     extra_data = {}
 
-    if enqueue_date is not None:
+    if enqueue_date_str is not None:
         now = datetime.datetime.now()
+        enqueue_date = datetime.datetime.strptime(enqueue_date_str, DATE_FORMAT)
 
         queue_time_s = (now - enqueue_date).total_seconds()
         extra_data['queue_time_s'] = queue_time_s
