@@ -1,8 +1,12 @@
 import collections
 import logging
 
+import datetime
 from push_notifications.apns import apns_send_bulk_message, apns_send_message
 from push_notifications.gcm import gcm_send_bulk_message, gcm_send_message
+
+from analytics import analytics
+from analytics.events import SEND_PUSH_MESSAGE
 from push.celery import app
 from django.conf import settings
 
@@ -14,14 +18,14 @@ logger = logging.getLogger("django")
 
 def send_apns(registration_ids, message, **kwargs):
     if USE_MESSAGE_QUEUE:
-        _task_send_apns.delay(registration_ids, message, **kwargs)
+        _task_send_apns.delay(registration_ids, message, **dict(kwargs, enqueue_date=datetime.datetime.now()))
     else:
         _send_apns(registration_ids, message, **kwargs)
 
 
 def send_gcm(registration_ids, message, **kwargs):
     if USE_MESSAGE_QUEUE:
-        _task_send_gcm.delay(registration_ids, message, **kwargs)
+        _task_send_gcm.delay(registration_ids, message, **dict(kwargs, enqueue_date=datetime.datetime.now()))
     else:
         _send_gcm(registration_ids, message, **kwargs)
 
@@ -40,8 +44,10 @@ def _send_apns(registration_ids, message, **kwargs):
             apns_send_bulk_message(registration_ids, message, **kwargs)
         else:
             apns_send_message(registration_ids, message, **kwargs)
+        log_message_sent(**kwargs)
     except Exception as exception:
         logger.exception("Exception sending APNS message. %s : %s" % (exception.__class__.__name__, str(exception)))
+        log_message_sent(exception=exception, **kwargs)
 
 
 def _send_gcm(registration_ids, message, **kwargs):
@@ -64,6 +70,8 @@ def _send_gcm(registration_ids, message, **kwargs):
     else:
         gcm_send_message(registration_ids, data, **kwargs)
 
+    log_message_sent(**kwargs)
+
 
 @app.task(ignore_result=True)
 def _task_send_apns(registration_ids, message, **kwargs):
@@ -73,3 +81,19 @@ def _task_send_apns(registration_ids, message, **kwargs):
 @app.task(ignore_result=True)
 def _task_send_gcm(registration_ids, message, **kwargs):
     return _send_gcm(registration_ids, message, **kwargs)
+
+
+def log_message_sent(exception=None, **kwargs):
+    enqueue_date = kwargs['enqueue_date']
+    extra_data = {}
+
+    if enqueue_date is not None:
+        now = datetime.datetime.now()
+
+        queue_time_s = (now - enqueue_date).total_seconds()
+        extra_data['queue_time_s'] = queue_time_s
+
+    if exception is not None:
+        extra_data['exception'] = "%s : %s" % (exception.__class__.__name__, str(exception))
+
+    analytics.log(SEND_PUSH_MESSAGE, extra_data)
