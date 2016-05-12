@@ -21,11 +21,11 @@ class Command(BaseCommand):
 
         now = datetime.datetime.now()
         expiry_timedelta = datetime.timedelta(seconds=settings.CHATSECURE_PUSH['DEFAULT_TOKEN_EXPIRY_TIME_S'])
-        expiry_cutoff_date = now - expiry_timedelta
+        earliest_created_date = now - expiry_timedelta  # A token created_date before this is expired
 
-        self.stdout.write(self.style.SUCCESS("Token expiry date is %s" % expiry_cutoff_date))
+        self.stdout.write(self.style.SUCCESS("Tokens created before %s are expired" % earliest_created_date))
 
-        expired_tokens = Token.objects.filter(date_created__lte=expiry_cutoff_date)
+        expired_tokens = Token.objects.filter(date_created__lte=earliest_created_date)
 
         self.stdout.write(self.style.SUCCESS("%d / %d tokens are expired" % (expired_tokens.count(), Token.objects.all().count())))
 
