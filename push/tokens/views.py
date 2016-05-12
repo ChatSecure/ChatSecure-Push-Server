@@ -10,7 +10,8 @@ from api.permissions import OwnerOnlyPermission
 class TokenViewSet(viewsets.ModelViewSet):
     """
     Tokens represent revokable authorization to send push messages to ** all of the owner's devices**. It's reccommended
-    an owner request a new token for each sender, so that he/she may revoke push access per-sender.
+    an owner request a new token for each sender, so that he/she may revoke push access per-sender. Tokens have a
+    time-to-live, so take note of the **date_expires** attribute.
 
     A token is created with reference to **one** of its owner's devices, but it grants the bearer authorization to push
     to that device or **all of the owner's devices**.
