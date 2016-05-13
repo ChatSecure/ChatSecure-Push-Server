@@ -50,7 +50,10 @@ def _send_apns(registration_ids, message, **kwargs):
         log_message_sent(enqueue_date_str=enqueue_date_str)
     except Exception as exception:
         logger.exception("Exception sending APNS message. %s : %s" % (exception.__class__.__name__, str(exception)))
+
+        # We log a 'message sent with exception' event as well as the full exception itself
         log_message_sent(exception=exception, enqueue_date_str=enqueue_date_str)
+        analytics.exception()
 
 
 def _send_gcm(registration_ids, message, **kwargs):
@@ -100,4 +103,4 @@ def log_message_sent(exception=None, enqueue_date_str=None):
     if exception is not None:
         extra_data['exception'] = "%s : %s" % (exception.__class__.__name__, str(exception))
 
-    analytics.log(SEND_PUSH_MESSAGE, extra_data)
+    analytics.event(SEND_PUSH_MESSAGE, extra_data)
