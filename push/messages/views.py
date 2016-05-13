@@ -92,6 +92,6 @@ def send_message(token=None, data=None, alert_body=None, broadcast=True):
         gcm_device = token.gcm_device
 
         if apns_device:
-            send_apns(registration_ids=apns_device.registration_id, message=message, content_available=True)
+            send_apns(registration_ids=apns_device.registration_id, message=message, alert_body=alert_body, content_available=True)
         elif gcm_device:
             send_gcm(registration_ids=gcm_device.registration_id, message=message)
