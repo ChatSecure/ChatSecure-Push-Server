@@ -31,20 +31,21 @@ class MessagesViewSet(viewsets.ViewSet):
 
         if serializer.is_valid():
             token_string = serializer.data['token']
-            message_data = serializer.data.get('data')
+            message_data = serializer.data.get('data', None)
+            alert_body = serializer.data.get('alert_body', None)
             try:
                 token = Token.objects.get(token=token_string)
             except Token.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
-            send_message(token=token, data=message_data)
+            send_message(token=token, data=message_data, alert_body=alert_body)
 
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def send_message(token=None, data=None, broadcast=True):
+def send_message(token=None, data=None, alert_body=None, broadcast=True):
     '''
 
     Send a push message containing to the owner of the provided token.
@@ -62,6 +63,7 @@ def send_message(token=None, data=None, broadcast=True):
 
     :param token: the whitelist token corresponding to the specific device to push, if broadcast is False
     :param data: APNS currently supports 2kb and GCM 4kb
+    :param alert_body: A message to be included as the APNS 'alert body' or the GCM 'Notification body' (TODO)
     :param broadcast: whether to alert all devices belonging to recipient (default True)
     '''
 
@@ -79,10 +81,11 @@ def send_message(token=None, data=None, broadcast=True):
 
         if apns_devices.count() > 0:
             apns_registration_ids = [device.registration_id for device in apns_devices]
-            send_apns(registration_ids=apns_registration_ids, message=message, content_available=True)
+            send_apns(registration_ids=apns_registration_ids, message=message, alert_body=alert_body, content_available=True)
 
         if gcm_devices.count() > 0:
             gcm_registration_ids = [device.registration_id for device in gcm_devices]
+            # TODO : Bundle alert_body
             send_gcm(registration_ids=gcm_registration_ids, message=message)
     else:
         apns_device = token.apns_device

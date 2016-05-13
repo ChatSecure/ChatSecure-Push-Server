@@ -2,6 +2,8 @@ import collections
 import logging
 
 import datetime
+from copy import deepcopy
+
 from push_notifications.apns import apns_send_bulk_message, apns_send_message
 from push_notifications.gcm import gcm_send_bulk_message, gcm_send_message
 
@@ -17,11 +19,15 @@ DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'  # Used to marshal enqueue date to celery
 logger = logging.getLogger("django")
 
 
-def send_apns(registration_ids, message, **kwargs):
+def send_apns(registration_ids, message, alert_body=None, **kwargs):
+    apns_message = deepcopy(message)
+    if alert_body is not None:
+        apns_message['body'] = alert_body
+
     if USE_MESSAGE_QUEUE:
-        _task_send_apns.delay(registration_ids, message, **dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT)))
+        _task_send_apns.delay(registration_ids, apns_message, **dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT)))
     else:
-        _send_apns(registration_ids, message, **kwargs)
+        _send_apns(registration_ids, apns_message, **kwargs)
 
 
 def send_gcm(registration_ids, message, **kwargs):
