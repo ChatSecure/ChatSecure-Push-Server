@@ -87,13 +87,25 @@ def _send_gcm(registration_ids, message, **kwargs):
 
 @app.task(ignore_result=True)
 def _task_send_apns(registration_ids, message, **kwargs):
+    setup_rollbar()
     return _send_apns(registration_ids, message, **kwargs)
 
 
 @app.task(ignore_result=True)
 def _task_send_gcm(registration_ids, message, **kwargs):
+    setup_rollbar()
     return _send_gcm(registration_ids, message, **kwargs)
 
+
+def setup_rollbar():
+    """
+    Setup Rollbar uncaught exception handling. The Django application is automatically setup via Rollbar's middleware,
+    but worker processes need to explicitly setup rollbar.
+    """
+    import rollbar
+    import os
+
+    rollbar.init(os.environ.get('ROLLBAR_ACCESS_TOKEN', ''), 'development' if settings.DEBUG else 'production')
 
 
 def log_message_sent(exception=None, enqueue_date_str=None):
