@@ -12,7 +12,6 @@ from analytics.events import SEND_PUSH_MESSAGE
 from push.celery import app
 from django.conf import settings
 
-
 USE_MESSAGE_QUEUE = settings.CHATSECURE_PUSH['USE_MESSAGE_QUEUE']
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'  # Used to marshal enqueue date to celery
 
@@ -94,6 +93,7 @@ def _task_send_apns(registration_ids, message, **kwargs):
 @app.task(ignore_result=True)
 def _task_send_gcm(registration_ids, message, **kwargs):
     return _send_gcm(registration_ids, message, **kwargs)
+
 
 
 def log_message_sent(exception=None, enqueue_date_str=None):
