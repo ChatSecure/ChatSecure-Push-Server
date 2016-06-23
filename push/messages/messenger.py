@@ -45,6 +45,9 @@ def _send_apns(registration_ids, message, **kwargs):
     :param kwargs: additional APNS arguments. See push_notifications.apns._apns_sendd
     '''
 
+    # Strip whitespace from APNS Registration Ids. This is also done on ingestion for new registration_ids
+    registration_ids = [reg_id.replace(" ", "") for reg_id in registration_ids]
+
     enqueue_date_str = kwargs.pop('enqueue_date', None)
 
     try:
