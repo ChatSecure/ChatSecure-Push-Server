@@ -18,7 +18,6 @@ keen==0.3.28
 kombu==4.0.2
 librabbitmq==1.6.1
 Markdown==2.6.8
-oauthlib==1.0.3
 packaging==16.8
 Padding==0.4
 psycopg2==2.6.2
