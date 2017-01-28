@@ -16,7 +16,6 @@ idna==2.2
 ipaddress==1.0.18
 keen==0.3.28
 kombu==4.0.2
-librabbitmq==1.6.1
 Markdown==2.6.8
 packaging==16.8
 Padding==0.4
