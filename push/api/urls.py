@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from api.routers import Router
 from api.views import PubSubNodeViewSet
 from tokens.views import TokenViewSet
