@@ -35,4 +35,5 @@ class PushUserAdmin(UserAdmin):
             (None, {'fields': ('expiration_date',)}),
     )
 
+
 admin.site.register(PushUser, PushUserAdmin)
