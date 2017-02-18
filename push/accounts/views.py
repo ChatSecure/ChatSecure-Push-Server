@@ -74,6 +74,19 @@ class AccountViewSet(viewsets.ViewSet):
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+    def destroy(self, request, pk=None):
+        try:
+            user = PushUser.objects.get(pk=pk)
+        except PushUser.DoesNotExist:
+            return Response(status.HTTP_404_NOT_FOUND)
+        if user.pk != request.user.pk:
+            return Response(status.HTTP_403_FORBIDDEN)
+        deleted = user.delete()
+        if len(deleted) > 0:
+            return Response(status.HTTP_200_OK)
+        return Response(status.HTTP_204_NO_CONTENT)
+
+
 def create_user_response_data(user, token=None):
     user_serializer = UserSerializer(user)
     response_data = user_serializer.data

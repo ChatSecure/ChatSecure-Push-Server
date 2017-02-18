@@ -12,4 +12,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = PushUser
         fields = ('username', 'email', 'id')
-        read_only_fields = ('username',)
+        read_only_fields = ('username', )
