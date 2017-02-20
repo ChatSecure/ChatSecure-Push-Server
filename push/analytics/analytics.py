@@ -4,6 +4,8 @@ import sys
 import os
 import logging
 
+logger = logging.getLogger("django")
+
 
 def event(event_name, extra_data_dict={}):
     """
@@ -13,7 +15,7 @@ def event(event_name, extra_data_dict={}):
     if keen_enabled:
         keen.add_event(event_name, extra_data_dict)
     else:
-        logging.info('%s: %s', event_name, extra_data_dict)
+        logger.info('%s: %s', event_name, extra_data_dict)
 
 
 def exception(request=None, extra_data=None):
