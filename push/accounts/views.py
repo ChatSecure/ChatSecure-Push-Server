@@ -29,9 +29,10 @@ class AccountViewSet(viewsets.ViewSet):
     permission_classes = (permissions.AllowAny,)
     serializer_class = CreateUserSerializer
 
+    # Instead of pk, we use usernames here
     def retrieve(self, request, pk=None):
         try:
-            user = PushUser.objects.get(pk=pk)
+            user = PushUser.objects.get(username=pk)
         except PushUser.DoesNotExist:
             return Response(status.HTTP_404_NOT_FOUND)
         if user.pk != request.user.pk:
@@ -40,7 +41,7 @@ class AccountViewSet(viewsets.ViewSet):
         return Response(user_serializer.data)
 
     def list(self, request):
-        return self.retrieve(request, request.user.pk)
+        return self.retrieve(request, request.user.username)
 
     def create(self, request):
         serializer = CreateUserSerializer(data=request.data)
@@ -74,9 +75,10 @@ class AccountViewSet(viewsets.ViewSet):
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+    # Instead of pk, we use usernames here
     def destroy(self, request, pk=None):
         try:
-            user = PushUser.objects.get(pk=pk)
+            user = PushUser.objects.get(username=pk)
         except PushUser.DoesNotExist:
             return Response(status.HTTP_404_NOT_FOUND)
         if user.pk != request.user.pk:
