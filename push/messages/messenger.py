@@ -5,7 +5,7 @@ import datetime
 from copy import deepcopy
 
 from push_notifications.apns import apns_send_bulk_message, apns_send_message
-from push_notifications.gcm import gcm_send_bulk_message, gcm_send_message
+from push_notifications.gcm import send_bulk_message, send_message
 
 from analytics import analytics
 from analytics.events import SEND_PUSH_MESSAGE
@@ -81,9 +81,9 @@ def _send_gcm(registration_ids, message, **kwargs):
         data["message"] = message
 
     if isinstance(registration_ids, collections.Iterable):
-        gcm_send_bulk_message(registration_ids, data, **kwargs)
+        send_bulk_message(registration_ids, data, **kwargs)
     else:
-        gcm_send_message(registration_ids, data, **kwargs)
+        send_message(registration_ids, data, **kwargs)
 
     log_message_sent(enqueue_date_str=enqueue_date_str)
 
