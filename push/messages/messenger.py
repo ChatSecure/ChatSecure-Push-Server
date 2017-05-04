@@ -11,6 +11,7 @@ from analytics import analytics
 from analytics.events import SEND_PUSH_MESSAGE
 from push.celery import app
 from django.conf import settings
+from push_notifications.conf import get_manager
 
 USE_MESSAGE_QUEUE = settings.CHATSECURE_PUSH['USE_MESSAGE_QUEUE']
 DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'  # Used to marshal enqueue date to celery
@@ -112,7 +113,9 @@ def setup_rollbar():
 
 
 def log_message_sent(exception=None, enqueue_date_str=None):
-    extra_data = {}
+    extra_data = {
+        'using_sandbox': get_manager().get_apns_use_sandbox(None)
+    }
 
     if enqueue_date_str is not None:
         now = datetime.datetime.utcnow()
