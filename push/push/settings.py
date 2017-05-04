@@ -178,7 +178,6 @@ LOGGING = {
 
 TEMPLATES = [
     {
-        'TEMPLATE_DEBUG': DEBUG,
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             # insert your TEMPLATE_DIRS here
