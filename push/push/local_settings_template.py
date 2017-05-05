@@ -38,4 +38,5 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     #'APNS_CERTIFICATE' : '/Path/To/Certificate.pem'
 
     #'GCM_API_KEY' : 'Your API Key'
+    'APNS_TOPIC': 'your.bundle.Identifier'
 }

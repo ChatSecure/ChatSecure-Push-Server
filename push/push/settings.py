@@ -226,6 +226,7 @@ PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_ERROR_TIMEOUT': .5,  # Seconds
 
     'GCM_API_KEY': os.environ.get('GCM_API_KEY', ''),
+    'APNS_TOPIC': os.environ.get("APNS_TOPIC", 'CHANGEME_DEFAULT_APNS_TOPIC'),
 }
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()

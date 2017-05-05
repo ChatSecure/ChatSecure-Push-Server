@@ -121,14 +121,18 @@ In `PUSH_NOTIFICATION_SETTINGS` (for django-push-notifications app):
  * `APNS_FEEDBACK_HOST` (str) : Address to the APNS Feedback Host. Should be one of `settings.APNS_FEEDBACK_HOST_DEV` or `settings.APNS_FEEDBACK_HOST_PROD`, depending on which APNS certificate you are using
  * `APNS_ERROR_TIMEOUT` (float) : A period in seconds to await an APNS error response. Set non-zero to check and log APNS send errors. `0.5` is a typical value.
  * `GCM_API_KEY` (str) : Your Google Cloud Messaging `Server Api Key`
+ * `APNS_TOPIC` (str): This is used to group iOS push notifications. Use your app's bundle identifier.
 
 #### Heroku Instructions
+
+    heroku config:set KEY=VALUE
 
 On Heroku the default `settings.py` will generate the above settings if you specify the following environmental variables:
 
  * `GCM_API_KEY` : Your Google Cloud Messaging `Server Api Key`
  * `APNS_CERTIFICATE` : Your APNS certificate contents. This can be added via `heroku config:add APNS_CERTIFICATE=“$(cat Certificate.pem)”`
  * `APNS_USE_SANDBOX` : Either `'true'` or `'false'`. Will supply the appropriate values for `APNS_HOST` and `APNS_FEEDBACK_HOST`
+* `APNS_TOPIC`: This is used to group iOS push notifications. Use your app's bundle identifier.
 
 ### Database
 
