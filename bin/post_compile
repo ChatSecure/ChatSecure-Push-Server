@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
+echo "Running post-compile hook..."
+
 # Save APNS Certificate from environment to file
 mkdir -p private_keys
 echo "$APNS_CERTIFICATE" > ./private_keys/apns_cert.pem
 
 # Run Django migrations.
 python ./push/manage.py migrate
+
+echo "Running post-compile finished."
