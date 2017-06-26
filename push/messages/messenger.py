@@ -19,10 +19,26 @@ DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'  # Used to marshal enqueue date to celery
 logger = logging.getLogger("django")
 
 
-def send_apns(registration_ids, message, alert_body=None, **kwargs):
+def loc_key_for_alert_type(alert_type):
+    '''
+    This will return a static localizable string for display in the payload
+    :param alert_type: valid values are 'message', 'typing' and 'silent' (no-op)
+    :return: localizable string key
+    '''
+    if alert_type == 'message':
+        return 'New Message!'
+    elif alert_type == 'typing':
+        return 'Someone is typing...'
+    else:
+        return None
+
+
+def send_apns(registration_ids, message, alert_type=None, **kwargs):
     apns_message = deepcopy(message)
-    if alert_body is not None:
-        apns_message['body'] = alert_body
+    loc_key = loc_key_for_alert_type(alert_type)
+    if loc_key is not None:
+        apns_message['body'] = loc_key
+        apns_message['loc-key'] = loc_key
 
     if USE_MESSAGE_QUEUE:
         _task_send_apns.delay(registration_ids, apns_message, **dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT)))
