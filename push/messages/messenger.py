@@ -37,7 +37,7 @@ def send_apns(registration_ids, message, alert_type=None, **kwargs):
     apns_message = deepcopy(message)
     loc_key = loc_key_for_alert_type(alert_type)
     if loc_key is not None:
-        # apns_message['body'] = loc_key
+        apns_message['body'] = loc_key
         apns_message['loc-key'] = loc_key
         apns_message['thread_id'] = alert_type
         # apns_message['type'] = alert_type
