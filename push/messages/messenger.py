@@ -41,6 +41,8 @@ def send_apns(registration_ids, message, alert_type=None, **kwargs):
     else:
         _send_apns(registration_ids, apns_message, **kwargs)
 
+    return
+
     loc_key = loc_key_for_alert_type(alert_type)
     if loc_key is not None:
         foreground_message = deepcopy(message)
