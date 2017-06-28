@@ -35,6 +35,12 @@ def loc_key_for_alert_type(alert_type):
 
 def send_apns(registration_ids, message, alert_type=None, **kwargs):
     apns_message = deepcopy(message)
+
+    if USE_MESSAGE_QUEUE:
+        _task_send_apns.delay(registration_ids, apns_message, **dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT)))
+    else:
+        _send_apns(registration_ids, apns_message, **kwargs)
+
     loc_key = loc_key_for_alert_type(alert_type)
     if loc_key is not None:
         foreground_message = deepcopy(message)
@@ -49,10 +55,6 @@ def send_apns(registration_ids, message, alert_type=None, **kwargs):
         else:
             _send_apns(registration_ids, foreground_message, **kwargs)
 
-    if USE_MESSAGE_QUEUE:
-        _task_send_apns.delay(registration_ids, apns_message, **dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT)))
-    else:
-        _send_apns(registration_ids, apns_message, **kwargs)
 
 
 def send_gcm(registration_ids, message, **kwargs):
