@@ -17,7 +17,8 @@ class MessagesViewSet(viewsets.ViewSet):
         { ... APNS / GCM Payload
             'message' : {
                 'token' : '<token>',
-                'data' : '<data>'
+                'data' : '<data>',
+                'priority' : 'high'
             }
         }
 
@@ -32,20 +33,20 @@ class MessagesViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             token_string = serializer.data['token']
             message_data = serializer.data.get('data', None)
-            alert_type = serializer.data.get('type', 'silent')  # Default to silent
+            priority = serializer.data.get('priority', 'low')  # Default to silent
             try:
                 token = Token.objects.get(token=token_string)
             except Token.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
-            send_message(token=token, data=message_data, alert_type=alert_type)
+            send_message(token=token, data=message_data, priority=priority)
 
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def send_message(token=None, data=None, broadcast=True, alert_type=None):
+def send_message(token=None, data=None, broadcast=True, priority='low'):
     '''
 
     Send a push message containing to the owner of the provided token.
@@ -55,7 +56,7 @@ def send_message(token=None, data=None, broadcast=True, alert_type=None):
         'message' : {
             'token' : 'recipient_whitelist_token',
             'data' : 'data',
-            'type' : 'message'
+            'priority' : 'high'
         }
     }
 
@@ -65,7 +66,8 @@ def send_message(token=None, data=None, broadcast=True, alert_type=None):
     :param token: the whitelist token corresponding to the specific device to push, if broadcast is False
     :param data: APNS currently supports 2kb and GCM 4kb
     :param broadcast: whether to alert all devices belonging to recipient (default True)
-    :param alert_type: Valid values are 'typing' and 'message' and 'silent'. Omitting this key is equivalent to 'silent'
+    :param priority: Valid values are 'high' and 'low'. Omitting this key is equivalent to 'low'. Sending
+                    'high' results in a static 'New Message!' notification, low does a background fetch.
     '''
 
     message = {
@@ -82,7 +84,7 @@ def send_message(token=None, data=None, broadcast=True, alert_type=None):
 
         if apns_devices.count() > 0:
             apns_registration_ids = [device.registration_id for device in apns_devices]
-            send_apns(registration_ids=apns_registration_ids, message=message, alert_type=alert_type, content_available=True)
+            send_apns(registration_ids=apns_registration_ids, message=message, priority=priority, content_available=True)
 
         if gcm_devices.count() > 0:
             gcm_registration_ids = [device.registration_id for device in gcm_devices]
@@ -92,6 +94,6 @@ def send_message(token=None, data=None, broadcast=True, alert_type=None):
         gcm_device = token.gcm_device
 
         if apns_device:
-            send_apns(registration_ids=apns_device.registration_id, message=message, alert_type=alert_type, content_available=True)
+            send_apns(registration_ids=apns_device.registration_id, message=message, priority=priority, content_available=True)
         elif gcm_device:
             send_gcm(registration_ids=gcm_device.registration_id, message=message)

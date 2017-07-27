@@ -19,21 +19,7 @@ DATE_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'  # Used to marshal enqueue date to celery
 logger = logging.getLogger("django")
 
 
-def loc_key_for_alert_type(alert_type):
-    '''
-    This will return a static localizable string for display in the payload
-    :param alert_type: valid values are 'message', 'typing' and 'silent' (no-op)
-    :return: localizable string key
-    '''
-    if alert_type == 'message':
-        return 'New Message!'
-    elif alert_type == 'typing':
-        return 'Someone is typing...'
-    else:
-        return None
-
-
-def send_apns(registration_ids, message, alert_type=None, **kwargs):
+def send_apns(registration_ids, message, priority, **kwargs):
     apns_message = deepcopy(message)
 
     if USE_MESSAGE_QUEUE:
@@ -41,14 +27,11 @@ def send_apns(registration_ids, message, alert_type=None, **kwargs):
     else:
         _send_apns(registration_ids, apns_message, **kwargs)
 
-    return
-
-    loc_key = loc_key_for_alert_type(alert_type)
-    if loc_key is not None:
+    if priority == 'high':
         foreground_message = deepcopy(message)
-        foreground_message['body'] = loc_key
-        foreground_message['loc-key'] = loc_key
-        foreground_message['thread_id'] = alert_type
+        foreground_message['body'] = 'New Message!'
+        foreground_message['loc-key'] = 'New Message!'
+        foreground_message['thread_id'] = 'New Message!'
         # foreground_message['type'] = alert_type
         # foreground_message['collapse_id'] = alert_type
         if USE_MESSAGE_QUEUE:
