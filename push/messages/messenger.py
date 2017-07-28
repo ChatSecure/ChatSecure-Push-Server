@@ -64,7 +64,7 @@ def _send_apns(registration_ids, message, **kwargs):
     enqueue_date_str = kwargs.pop('enqueue_date', None)
 
     priority = 'low'
-    if message['body'] is not None:
+    if message.get('body', None) is not None:
         priority = 'high'
 
     try:
