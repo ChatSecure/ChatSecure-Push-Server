@@ -63,17 +63,21 @@ def _send_apns(registration_ids, message, **kwargs):
 
     enqueue_date_str = kwargs.pop('enqueue_date', None)
 
+    priority = 'low'
+    if message['body'] is not None:
+        priority = 'high'
+
     try:
         if isinstance(registration_ids, collections.Iterable):
             apns_send_bulk_message(registration_ids, message, **kwargs)
         else:
             apns_send_message(registration_ids, message, **kwargs)
-        log_message_sent(enqueue_date_str=enqueue_date_str)
+        log_message_sent(enqueue_date_str=enqueue_date_str, priority=priority)
     except Exception as exception:
         logger.exception("Exception sending APNS message. %s : %s" % (exception.__class__.__name__, str(exception)))
 
         # We log a 'message sent with exception' event as well as the full exception itself
-        log_message_sent(exception=exception, enqueue_date_str=enqueue_date_str)
+        log_message_sent(exception=exception, enqueue_date_str=enqueue_date_str, priority=priority)
         analytics.exception()
 
 
@@ -124,10 +128,12 @@ def setup_rollbar():
     rollbar.init(os.environ.get('ROLLBAR_ACCESS_TOKEN', ''), 'development' if settings.DEBUG else 'production')
 
 
-def log_message_sent(exception=None, enqueue_date_str=None):
+def log_message_sent(exception=None, priority=None, enqueue_date_str=None):
     extra_data = {
         'using_sandbox': get_manager().get_apns_use_sandbox(None)
     }
+    if priority is not None:
+        extra_data['priority'] = priority
 
     if enqueue_date_str is not None:
         now = datetime.datetime.utcnow()
