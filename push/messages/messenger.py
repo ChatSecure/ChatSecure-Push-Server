@@ -32,14 +32,14 @@ def send_apns(registration_ids, message, priority, **kwargs):
         foreground_message['body'] = 'New Message!'
         foreground_message['loc-key'] = 'New Message!'
         foreground_message['thread_id'] = 'New Message!'
-        foreground_message['sound'] = 'default'
+        # foreground_message['sound'] = 'default'
         # foreground_message['type'] = alert_type
         # foreground_message['collapse_id'] = alert_type
+        new_kwargs = dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT), sound='default')
         if USE_MESSAGE_QUEUE:
-            _task_send_apns.delay(registration_ids, foreground_message,
-                                  **dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT)))
+            _task_send_apns.delay(registration_ids, foreground_message, **new_kwargs)
         else:
-            _send_apns(registration_ids, foreground_message, **kwargs)
+            _send_apns(registration_ids, foreground_message, **new_kwargs)
 
 
 
