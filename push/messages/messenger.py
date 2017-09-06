@@ -32,6 +32,7 @@ def send_apns(registration_ids, message, priority, **kwargs):
         foreground_message['body'] = 'New Message!'
         foreground_message['loc-key'] = 'New Message!'
         foreground_message['thread_id'] = 'New Message!'
+        foreground_message['sound'] = 'default'
         # foreground_message['type'] = alert_type
         # foreground_message['collapse_id'] = alert_type
         if USE_MESSAGE_QUEUE:
