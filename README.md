@@ -130,9 +130,11 @@ In `PUSH_NOTIFICATION_SETTINGS` (for django-push-notifications app):
 On Heroku the default `settings.py` will generate the above settings if you specify the following environmental variables:
 
  * `GCM_API_KEY` : Your Google Cloud Messaging `Server Api Key`
- * `APNS_CERTIFICATE` : Your APNS certificate contents. This can be added via `heroku config:add APNS_CERTIFICATE=“$(cat Certificate.pem)”`
+ * `APNS_CERTIFICATE` : Your APNS certificate contents. This can be added via `heroku config:add APNS_CERTIFICATE="$(cat Certificate.pem)"`
  * `APNS_USE_SANDBOX` : Either `'true'` or `'false'`. Will supply the appropriate values for `APNS_HOST` and `APNS_FEEDBACK_HOST`
 * `APNS_TOPIC`: This is used to group iOS push notifications. Use your app's bundle identifier.
+
+Note: When updating the APNS certificate env var you'll need to push a new empty commit to Heroku otherwise the old certificate will be cached across dyno restarts.
 
 ### Database
 
