@@ -149,12 +149,14 @@ REST_FRAMEWORK = {
 
 USE_MESSAGE_QUEUE = os.environ.get("USE_MESSAGE_QUEUE", 'true').lower()
 USE_MESSAGE_QUEUE = True if USE_MESSAGE_QUEUE == 'true' else False
+# Default 30 days
+DEFAULT_TOKEN_EXPIRY_TIME_S = int(os.environ.get("DEFAULT_TOKEN_EXPIRY_TIME_S", 60 * 60 * 24 * 30))
 
 CHATSECURE_PUSH = {
     # Whether to dispatch push messages on an asynchronous queue (currently Celery)
     'USE_MESSAGE_QUEUE': USE_MESSAGE_QUEUE,
     # Push Whitelist Tokens older than this expiry time will be deleted
-    'DEFAULT_TOKEN_EXPIRY_TIME_S': 60 * 60 * 24 * 60,  # 60 days
+    'DEFAULT_TOKEN_EXPIRY_TIME_S': DEFAULT_TOKEN_EXPIRY_TIME_S,
     # Address of the 'XMPP Push Service' which adapts XEP-0357 traffic to this app's HTTP API
     # This value is issued to clients who in turn deliver it to their XMPP Server
     'XMPP_PUSH_SERVICE': os.environ.get("XMPP_PUSH_SERVICE", '')
