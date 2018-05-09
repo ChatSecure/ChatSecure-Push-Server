@@ -22,25 +22,19 @@ logger = logging.getLogger("django")
 def send_apns(registration_ids, message, priority, **kwargs):
     apns_message = deepcopy(message)
 
-    if USE_MESSAGE_QUEUE:
-        _task_send_apns.delay(registration_ids, apns_message, **dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT)))
-    else:
-        _send_apns(registration_ids, apns_message, **kwargs)
-
+    # Only send APNS for high priority pushes
     if priority == 'high':
         foreground_message = deepcopy(message)
         foreground_message['body'] = 'New Message!'
         foreground_message['loc-key'] = 'New Message!'
         foreground_message['thread_id'] = 'New Message!'
-        # foreground_message['sound'] = 'default'
-        # foreground_message['type'] = alert_type
-        # foreground_message['collapse_id'] = alert_type
         new_kwargs = dict(kwargs, enqueue_date=datetime.datetime.utcnow().strftime(DATE_FORMAT), sound='default')
         if USE_MESSAGE_QUEUE:
-            _task_send_apns.delay(registration_ids, foreground_message, **new_kwargs)
+            _task_send_apns.delay(registration_ids, [message, foreground_message], **new_kwargs)
         else:
-            _send_apns(registration_ids, foreground_message, **new_kwargs)
-
+            _send_apns(registration_ids, [message, foreground_message], **new_kwargs)
+    else:
+        log_message_sent(priority='ignored')
 
 
 def send_gcm(registration_ids, message, **kwargs):
@@ -50,7 +44,7 @@ def send_gcm(registration_ids, message, **kwargs):
         _send_gcm(registration_ids, message, **kwargs)
 
 
-def _send_apns(registration_ids, message, **kwargs):
+def _send_apns(registration_ids, messages, **kwargs):
     '''
     Send a message to one or more APNS recipients
 
@@ -60,26 +54,27 @@ def _send_apns(registration_ids, message, **kwargs):
     '''
 
     # Strip whitespace from APNS Registration Ids. This is also done on ingestion for new registration_ids
-    registration_ids = [reg_id.replace(" ", "") for reg_id in registration_ids]
+    for message in messages:
+        registration_ids = [reg_id.replace(" ", "") for reg_id in registration_ids]
 
-    enqueue_date_str = kwargs.pop('enqueue_date', None)
+        enqueue_date_str = kwargs.pop('enqueue_date', None)
 
-    priority = 'low'
-    if message.get('body', None) is not None:
-        priority = 'high'
+        priority = 'low'
+        if message.get('body', None) is not None:
+            priority = 'high'
 
-    try:
-        if isinstance(registration_ids, collections.Iterable):
-            apns_send_bulk_message(registration_ids, message, **kwargs)
-        else:
-            apns_send_message(registration_ids, message, **kwargs)
-        log_message_sent(enqueue_date_str=enqueue_date_str, priority=priority)
-    except Exception as exception:
-        logger.exception("Exception sending APNS message. %s : %s" % (exception.__class__.__name__, str(exception)))
+        try:
+            if isinstance(registration_ids, collections.Iterable):
+                apns_send_bulk_message(registration_ids, message, **kwargs)
+            else:
+                apns_send_message(registration_ids, message, **kwargs)
+            log_message_sent(enqueue_date_str=enqueue_date_str, priority=priority)
+        except Exception as exception:
+            logger.exception("Exception sending APNS message. %s : %s" % (exception.__class__.__name__, str(exception)))
 
-        # We log a 'message sent with exception' event as well as the full exception itself
-        log_message_sent(exception=exception, enqueue_date_str=enqueue_date_str, priority=priority)
-        analytics.exception()
+            # We log a 'message sent with exception' event as well as the full exception itself
+            log_message_sent(exception=exception, enqueue_date_str=enqueue_date_str, priority=priority)
+            analytics.exception()
 
 
 def _send_gcm(registration_ids, message, **kwargs):
