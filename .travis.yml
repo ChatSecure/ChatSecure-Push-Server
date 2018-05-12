@@ -8,7 +8,7 @@ services:
   - postgresql
 
 before_install:
-  - export PIP_USE_MIRRORS=true
+  - export PIPENV_IGNORE_VIRTUALENVS=1
 
 install:
   - pip install pipenv
