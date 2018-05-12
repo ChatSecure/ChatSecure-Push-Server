@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from devices.models import APNSDevice, GCMDevice

@@ -14,6 +14,8 @@
 #    You should have received a copy of the GNU Affero General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+from __future__ import print_function
 DEBUG = True
 
 import requests
@@ -92,7 +94,7 @@ def verify_receipt(receipt_data):
     if status_code != 0 and not status_code == expired_status_code:  # TODO: Fix this in a better way for production
         return None
     if status_code == expired_status_code:
-        print 'Status code indicates subscription has expired.'
+        print('Status code indicates subscription has expired.')
         if not DEBUG:
             return None
     receipt = response['receipt']
@@ -155,7 +157,7 @@ def register():
     if account != None and not reset_account:
         return jsonify(error='Account already exists.')
     if reset_account == True:
-        print 'Resetting account.'
+        print('Resetting account.')
         accounts.remove(account['_id'])
     account_id = str(random.randint(1000000, 9999999))
     account = accounts.find_one({'account_id': account_id})
@@ -257,7 +259,7 @@ def block_pat():
     pats = account.get('pat')
     if pats == None or len(pats) == 0:
         return jsonify(error='No PATs are associated with this account.')
-    pats = filter(lambda a: a != pat, pats)
+    pats = [a for a in pats if a != pat]
     account['pats'] = pats
     accounts.save(account)
     return jsonify(success='PAT removed successfully.')
@@ -284,7 +286,7 @@ def knock():
         return jsonify(error='Invalid PAT')
     for dpt in dpts:
         # Send a notification
-        print 'sending push to ' + dpt
+        print('sending push to ' + dpt)
         payload_alert = PayloadAlert("", loc_key="Someone has requested to chat with you securely.")
         if anonymous == True:
             payload = Payload(payload_alert, sound="default")
@@ -296,9 +298,9 @@ def knock():
     bad_tokens = False
     for (token_hex, fail_time) in apns.feedback_server.items():
         # do stuff with token_hex and fail_time
-        print 'bad token: ' + token_hex
+        print('bad token: ' + token_hex)
         bad_tokens = True
-        dpts = filter(lambda a: a != token_hex, dpts)
+        dpts = [a for a in dpts if a != token_hex]
     if bad_tokens == True:
         account['dpt'] = dpts
         accounts.save(account)

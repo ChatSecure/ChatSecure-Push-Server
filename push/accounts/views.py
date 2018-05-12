@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.contrib.auth import authenticate
 from rest_framework import viewsets
 from rest_framework.response import Response

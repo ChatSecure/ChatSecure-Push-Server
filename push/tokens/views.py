@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from rest_framework import viewsets
 from rest_framework import permissions
 from tokens.models import Token
@@ -34,7 +35,7 @@ class TokenViewSet(viewsets.ModelViewSet):
         for the currently authenticated user.
         """
         user = self.request.user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return []
         return Token.objects.filter(owner=user)
 

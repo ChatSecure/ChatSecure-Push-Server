@@ -19,9 +19,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=100, null=True, blank=True)),
                 ('token', models.CharField(unique=True, max_length=100, verbose_name=b'Whitelist Token')),
-                ('apns_device', models.ForeignKey(blank=True, to='devices.APNSDevice', null=True)),
-                ('gcm_device', models.ForeignKey(blank=True, to='devices.GCMDevice', null=True)),
-                ('owner', models.ForeignKey(related_name='tokens', to=settings.AUTH_USER_MODEL)),
+                ('apns_device', models.ForeignKey(blank=True, to='devices.APNSDevice', null=True, on_delete=models.CASCADE,)),
+                ('gcm_device', models.ForeignKey(blank=True, to='devices.GCMDevice', null=True, on_delete=models.CASCADE,)),
+                ('owner', models.ForeignKey(related_name='tokens', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE,)),
             ],
         ),
     ]

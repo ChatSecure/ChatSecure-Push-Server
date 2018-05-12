@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.contrib import admin
 from accounts.models import PushUser
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
