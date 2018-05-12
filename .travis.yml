@@ -1,0 +1,23 @@
+language: python
+python:
+    - "2.7"
+    # - "3.6"
+    # - "3.7-dev"
+
+services:
+  - postgresql
+
+before_install:
+  - export PIPENV_IGNORE_VIRTUALENVS=1
+
+install:
+  - pip install pipenv
+  - pipenv install --dev
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - mv push/push/settings_travis.py push/push/local_settings.py
+
+script:
+  - cd push
+  - pipenv run ./manage.py test -v 2
