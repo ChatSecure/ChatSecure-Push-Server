@@ -8,7 +8,7 @@ celery = { version = "*"}
 django-push-notifications = { version = "*"}
 djangorestframework = { version = "*"}
 gunicorn = { version = "*"}
-psycopg2 = { version = "*"}
+psycopg2-binary = { version = "*"}
 Django = ">=1.0,<2.0"
 dj-database-url = "*"
 
