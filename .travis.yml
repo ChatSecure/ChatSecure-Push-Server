@@ -19,4 +19,5 @@ before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
 
 script:
-  - pipenv run push/manage.py test -v 2
+  - cd push
+  - pipenv run manage.py test -v 2
