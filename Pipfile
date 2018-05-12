@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+celery = { version = "*"}
+django-push-notifications = { version = "*"}
+djangorestframework = { version = "*"}
+gunicorn = { version = "*"}
+psycopg2-binary = { version = "*"}
+Django = ">=1.0,<2.0"
+dj-database-url = "*"
+rollbar = "*"
+dj-static = "*"
+markdown = "*"
+
+[dev-packages]
+
+[requires]
+python_version = '2.7'

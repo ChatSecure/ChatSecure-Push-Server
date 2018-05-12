@@ -1,4 +1,3 @@
-import keen
 import rollbar
 import sys
 import os
@@ -12,9 +11,6 @@ def event(event_name, extra_data_dict={}):
     """
     Log an event to the analytics backend
     """
-    keen_enabled = len(os.environ.get("KEEN_PROJECT_ID", '')) > 0
-    if keen_enabled:
-        keen.add_event(event_name, extra_data_dict)
     logger.info('%s: %s', event_name, extra_data_dict)
 
 
