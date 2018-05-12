@@ -50,6 +50,7 @@ USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
+TIME_ZONE = 'GMT'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
@@ -144,7 +145,8 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
-    'PAGINATE_BY': 10
+    'PAGINATE_BY': 10,
+    'DATETIME_FORMAT': "%Y-%m-%dT%H:%M:%S.%fZ", # iOS expects yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z e.g. 2018-05-12T19:48:19.888451Z # 2018-05-12T14:50:21.828346Z
 }
 
 USE_MESSAGE_QUEUE = os.environ.get("USE_MESSAGE_QUEUE", 'true').lower()
