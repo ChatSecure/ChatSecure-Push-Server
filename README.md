@@ -1,6 +1,8 @@
 ChatSecure Push Server
 ======================
 
+[![Build Status](https://travis-ci.org/ChatSecure/ChatSecure-Push-Server.svg?branch=master)](https://travis-ci.org/ChatSecure/ChatSecure-Push-Server)
+
 An experimental design for a privacy-minded push server.
 
 Deploy to Heroku
