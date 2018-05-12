@@ -20,4 +20,4 @@ before_script:
 
 script:
   - cd push
-  - pipenv run manage.py test -v 2
+  - pipenv run ./manage.py test -v 2
