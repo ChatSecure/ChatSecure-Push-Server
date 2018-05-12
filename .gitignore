@@ -1,4 +1,5 @@
 *.py[co]
+*.bak
 
 .DS_Store
 local_settings.py

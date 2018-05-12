@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from django.contrib import admin
 from devices.models import GCMDevice, APNSDevice
 from push_notifications.models import APNSDevice as PNAPNSDevice, GCMDevice as PNGCMDevice

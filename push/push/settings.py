@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import os
 # Django settings for push project.
 

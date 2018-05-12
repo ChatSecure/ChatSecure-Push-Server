@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from rest_framework.viewsets import ModelViewSet
 from api.permissions import OwnerOnlyPermission
 from devices.models import APNSDevice, GCMDevice
@@ -8,12 +9,12 @@ class DeviceViewSetMixin(object):
     lookup_field = "id"
 
     def perform_create(self, serializer):
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             serializer.save(owner=self.request.user)
 
     def get_queryset(self):
         user = self.request.user
-        if not user.is_authenticated():
+        if not user.is_authenticated:
             return []
         return self.queryset.filter(owner=user)
 

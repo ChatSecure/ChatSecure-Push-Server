@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import absolute_import
 import uuid
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -34,14 +35,14 @@ class Device(models.Model):
 
 
 class GCMDevice(Device):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='gcm_devices')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='gcm_devices', on_delete=models.CASCADE,)
 
     class Meta:
         verbose_name = _("GCM device")
 
 
 class APNSDevice(Device):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='apns_devices')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank=True, null=True, related_name='apns_devices', on_delete=models.CASCADE,)
 
     class Meta:
         verbose_name = _("APNS device")
