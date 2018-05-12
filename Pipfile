@@ -10,6 +10,7 @@ djangorestframework = { version = "*"}
 gunicorn = { version = "*"}
 psycopg2 = { version = "*"}
 Django = ">=1.0,<2.0"
+dj-database-url = "*"
 
 [dev-packages]
 
