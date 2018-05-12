@@ -8,7 +8,6 @@ services:
   - postgresql
 
 before_install:
-  - export DJANGO_SETTINGS_MODULE=push.settings_travis
   - export PIP_USE_MIRRORS=true
 
 install:
@@ -17,6 +16,7 @@ install:
 
 before_script:
   - psql -c 'create database travis_ci_test;' -U postgres
+  - mv push/push/settings_travis.py push/push/local_settings.py
 
 script:
   - cd push
