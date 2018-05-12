@@ -13,6 +13,7 @@ Django = ">=1.0,<2.0"
 dj-database-url = "*"
 rollbar = "*"
 dj-static = "*"
+markdown = "*"
 
 [dev-packages]
 
