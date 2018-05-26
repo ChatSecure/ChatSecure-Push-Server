@@ -42,4 +42,4 @@ class TokenViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
 
         # TODO : We should catch the event where the resulting token violates unique column constraint
-        serializer.save(owner=self.request.user, token=binascii.hexlify(os.urandom(20)))
+        serializer.save(owner=self.request.user, token=str(binascii.hexlify(os.urandom(20))))
