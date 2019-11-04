@@ -4,7 +4,6 @@ echo "Running post-compile hook..."
 
 # Save APNS Certificate from environment to file
 mkdir -p private_keys
-echo "$APNS_CERTIFICATE" > ./private_keys/apns_cert.pem
 echo "$APNS_AUTH_KEY" > ./private_keys/apns_auth_key.p8
 
 # Run Django migrations.
