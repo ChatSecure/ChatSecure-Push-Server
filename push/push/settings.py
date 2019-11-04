@@ -213,6 +213,7 @@ DATABASES['default'] = dj_database_url.config()
 
 # The APNS cert should be located at /ProjectRoot/private_keys/apns_cert.pem (../../../private_keys/apns_cert.pem)
 APNS_CERTIFICATE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'private_keys/apns_cert.pem')
+APNS_AUTH_KEY_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'private_keys/apns_auth_key.p8')
 
 # For reference, these are APNS Host and Feedback Host addresses
 APNS_HOST_DEV = "gateway.sandbox.push.apple.com"
@@ -225,6 +226,7 @@ APNS_USE_SANDBOX = True if APNS_USE_SANDBOX == 'true' else False
 
 PUSH_NOTIFICATIONS_SETTINGS = {
     'APNS_CERTIFICATE': APNS_CERTIFICATE_PATH,
+    'APNS_AUTH_KEY_PATH': APNS_AUTH_KEY_PATH,
     # 'APNS_HOST' : APNS_HOST_DEV if APNS_USE_SANDBOX else APNS_HOST_PROD,
     'APNS_USE_SANDBOX': APNS_USE_SANDBOX,
     # 'APNS_FEEDBACK_HOST': APNS_FEEDBACK_HOST_DEV if APNS_USE_SANDBOX else APNS_FEEDBACK_HOST_PROD,
