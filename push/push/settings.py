@@ -211,8 +211,7 @@ import dj_database_url
 
 DATABASES['default'] = dj_database_url.config()
 
-# The APNS cert should be located at /ProjectRoot/private_keys/apns_cert.pem (../../../private_keys/apns_cert.pem)
-APNS_CERTIFICATE_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'private_keys/apns_cert.pem')
+# The APNS key should be located at /ProjectRoot/private_keys/apns_auth_key.p8 (../../../private_keys/apns_auth_key.p8)
 APNS_AUTH_KEY_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'private_keys/apns_auth_key.p8')
 
 # For reference, these are APNS Host and Feedback Host addresses
@@ -225,8 +224,6 @@ APNS_USE_SANDBOX = os.environ.get("APNS_USE_SANDBOX", 'true').lower()
 APNS_USE_SANDBOX = True if APNS_USE_SANDBOX == 'true' else False
 
 PUSH_NOTIFICATIONS_SETTINGS = {
-    'APNS_CERTIFICATE': APNS_CERTIFICATE_PATH,
-    'APNS_AUTH_KEY_PATH': APNS_AUTH_KEY_PATH,
     # 'APNS_HOST' : APNS_HOST_DEV if APNS_USE_SANDBOX else APNS_HOST_PROD,
     'APNS_USE_SANDBOX': APNS_USE_SANDBOX,
     # 'APNS_FEEDBACK_HOST': APNS_FEEDBACK_HOST_DEV if APNS_USE_SANDBOX else APNS_FEEDBACK_HOST_PROD,
@@ -234,6 +231,10 @@ PUSH_NOTIFICATIONS_SETTINGS = {
 
     'GCM_API_KEY': os.environ.get('GCM_API_KEY', ''),
     'APNS_TOPIC': os.environ.get("APNS_TOPIC", 'CHANGEME_DEFAULT_APNS_TOPIC'),
+
+    'APNS_TEAM_ID': os.environ.get('APNS_TEAM_ID', ''),
+    'APNS_AUTH_KEY_ID': os.environ.get('APNS_AUTH_KEY_ID', ''),
+    'APNS_AUTH_KEY_PATH': APNS_AUTH_KEY_PATH,
 }
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
